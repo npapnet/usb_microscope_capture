@@ -1,6 +1,9 @@
+#%%[markdown]
+#  ** OBSOLETE**
+# these is one of the initial scripts which are now obsolete
+#
 #%%
 import cv2
-import os
 import pathlib 
 from datetime import datetime
 import time 
