@@ -6,6 +6,36 @@ import cv2
 
 from usb_microscope_capture import Camera, ImageCapturingExperiment
 
+
+def find_camera_availability(range_max=10, verbose:bool=False)->dict:
+    dicCameras={}
+    # Iterate through camera IDs starting from 0
+    for camera_id in range(range_max):
+        # Create a VideoCapture object for this camera
+        cap = cv2.VideoCapture(camera_id, cv2.CAP_DSHOW)
+        
+        # Check if the camera was opened successfully
+        if cap.isOpened():
+            # Read a frame from the camera to check if it is working properly
+            ret, frame = cap.read()
+            if ret: 
+                desc= f"Camera {camera_id}: {cap.get(cv2.CAP_PROP_FRAME_WIDTH)}x{cap.get(cv2.CAP_PROP_FRAME_HEIGHT)}"
+                dicCameras[camera_id] = desc
+                if verbose:
+                    print(desc)
+            else:
+                if verbose:
+                    print(f"Camera {camera_id} is not working properly")
+                dicCameras[camera_id] = f"Camera {camera_id}: not returning frame"
+            
+            # Release the camera
+            cap.release()
+        else:
+            if verbose:
+                print(f"Could not open camera {camera_id}")
+            dicCameras[camera_id] = f"Camera {camera_id}: not opened"        
+    return dicCameras
+
 def run_experiment(camera_id: int, camera_width: int, camera_height: int, delay_ms: int, num_images: int, image_data_dir: str) -> None:
     """ Run an image capturing experiment with the specified parameters.
     

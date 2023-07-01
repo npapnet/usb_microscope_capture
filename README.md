@@ -2,8 +2,6 @@
 
 Author: N. Papadakis
 
-
-
 Repository for a small package used for the development of  a USB Microscope capture  device.
 
 # 2. Requirements
