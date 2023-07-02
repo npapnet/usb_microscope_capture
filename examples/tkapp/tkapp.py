@@ -7,12 +7,14 @@ from tkinter import filedialog, ttk
 import cv2
 from PIL import Image, ImageTk
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
 from usb_microscope_capture import Camera, ImageCapturingExperiment
 
 
 class Model:
-    def __init__(self, camera_id=1, camera_width=640, camera_height=480, delay_ms=500, num_images=150, image_data_dir=pathlib.Path("captured_images")):
+    def __init__(self, camera_id=1, camera_width=640, camera_height=480, delay_ms=500, num_images=50, image_data_dir=pathlib.Path("captured_images")):
         self.camera = Camera(id=camera_id, width=camera_width, height=camera_height)
         self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
 
@@ -83,6 +85,7 @@ class View:
 
 class Controller:
     def __init__(self, master):
+        self.master = master
         self.model = Model()
         self.view = View(master)
 
@@ -95,13 +98,31 @@ class Controller:
         # this will allow for better updating of the images (without update_idle_tasks) and also stop the program.
         # 
         self.model.experiment.initialise(wait_for_keypress=False)
-        while self.model.experiment.image_counter < self.model.experiment.num_images:
+        self.master.after(0, self._check_experiment_state)
+    
+    def _check_experiment_state(self):
+        """this is a function that is performed periodically using the after function
+        """        
+        next_update_ms = 100
+        if self.model.experiment.image_counter < self.model.experiment.num_images:
             curr_time_s = time.time()
-            if curr_time_s - self.model.experiment.last_capture_timestamp >= self.model.experiment.delay_ms/1000:
-                frame = self.model.experiment.capture_image(curr_time_s)
+            time_since_last_capture_s = curr_time_s - self.model.experiment.last_capture_timestamp 
+            if time_since_last_capture_s >= self.model.experiment.delay_ms/1000:
+                # perform capture
                 self.model.experiment.last_capture_timestamp = curr_time_s
+                frame = self.model.experiment.capture_image(curr_time_s)
                 self.view.update_image(frame) 
-        self.model.experiment.finalise()
+                next_update_ms = int(self.model.experiment.delay_ms/2)
+                logging.debug(f"    - captured: {self.model.experiment.image_counter }, next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
+            else:
+                # not enough time passed wait a few ms
+                next_update_ms = max(1, int((self.model.experiment.delay_ms -time_since_last_capture_s*1000)/2))
+                logging.debug(f"               >    next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
+            self.master.after(next_update_ms, self._check_experiment_state)    
+        else:
+            # the experiment has finished 
+            logging.debug("Experiment Finished (image counter = num images)")
+            self.model.experiment.finalise()
 
     def stop_experiment(self):
         # TODO add functionality
