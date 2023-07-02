@@ -84,6 +84,7 @@ class View:
 
 
 class Controller:
+    experiment_state = False
     def __init__(self, master):
         self.master = master
         self.model = Model()
@@ -94,17 +95,16 @@ class Controller:
         self.view.frame.toggle_button.config(command=self.view.toggle_image_window)
 
     def start_experiment(self):
-        # TODO this section once it start it consumes all resources. I could use tk.after to see how often the following code is performed. 
-        # this will allow for better updating of the images (without update_idle_tasks) and also stop the program.
         # 
         self.model.experiment.initialise(wait_for_keypress=False)
+        self.experiment_state = True
         self.master.after(0, self._check_experiment_state)
     
     def _check_experiment_state(self):
         """this is a function that is performed periodically using the after function
         """        
         next_update_ms = 100
-        if self.model.experiment.image_counter < self.model.experiment.num_images:
+        if (self.model.experiment.image_counter < self.model.experiment.num_images) and (self.experiment_state==True):
             curr_time_s = time.time()
             time_since_last_capture_s = curr_time_s - self.model.experiment.last_capture_timestamp 
             if time_since_last_capture_s >= self.model.experiment.delay_ms/1000:
@@ -120,13 +120,15 @@ class Controller:
                 logging.debug(f"               >    next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
             self.master.after(next_update_ms, self._check_experiment_state)    
         else:
-            # the experiment has finished 
+            # the experiment has finished or stopped
             logging.debug("Experiment Finished (image counter = num images)")
             self.model.experiment.finalise()
 
     def stop_experiment(self):
         # TODO add functionality
-        pass  # implement experiment stopping functionality
+        print ("Stopping capture experiment prematurely!")
+        logging.info("Stopping capture experiment prematurely!")
+        self.experiment_state = False
 
 
 if __name__ == "__main__":

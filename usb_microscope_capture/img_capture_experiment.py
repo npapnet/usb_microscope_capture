@@ -17,6 +17,7 @@ class ImageCapturingExperiment:
         
     def initialise(self, wait_for_keypress:bool=True):
         self.camera.initialise()
+        assert self.camera.check_operation() , "Camera not working or not connected. Exiting...." 
         if wait_for_keypress: # this is for compatibility with the console application
             input(" >> Press ENTER key to proceed. <<")
         
@@ -34,8 +35,6 @@ class ImageCapturingExperiment:
         self.test_metadata_fname = self.test_folder / f"metadata_{self.test_start_timestamp}.txt"
         self.metadata_fobj = open(self.test_metadata_fname, "w")
         self.metadata_fobj.write('ID \t elapsed\n')
-
-        
 
     def capture_image(self, curr_time_s:float):
         elapsed_time = curr_time_s - self.start_timestamp
