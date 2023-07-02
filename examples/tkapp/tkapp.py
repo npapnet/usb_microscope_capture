@@ -78,6 +78,7 @@ class View:
 
         # Keep a reference to the image object to prevent it from being garbage collected
         self.current_image = image
+        self.image_window.update_idletasks()
 
 
 class Controller:
@@ -90,6 +91,9 @@ class Controller:
         self.view.frame.toggle_button.config(command=self.view.toggle_image_window)
 
     def start_experiment(self):
+        # TODO this section once it start it consumes all resources. I could use tk.after to see how often the following code is performed. 
+        # this will allow for better updating of the images (without update_idle_tasks) and also stop the program.
+        # 
         self.model.experiment.initialise(wait_for_keypress=False)
         while self.model.experiment.image_counter < self.model.experiment.num_images:
             curr_time_s = time.time()
@@ -100,6 +104,7 @@ class Controller:
         self.model.experiment.finalise()
 
     def stop_experiment(self):
+        # TODO add functionality
         pass  # implement experiment stopping functionality
 
 
