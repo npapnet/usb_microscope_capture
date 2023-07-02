@@ -15,9 +15,10 @@ class ImageCapturingExperiment:
         
         self.metadata_fobj = None
         
-    def initialise(self):
+    def initialise(self, wait_for_keypress:bool=True):
         self.camera.initialise()
-        input(" >> Press ENTER key to proceed. <<")
+        if wait_for_keypress: # this is for compatibility with the console application
+            input(" >> Press ENTER key to proceed. <<")
         
         self._init_test_folder() 
         # initialise timestamps
