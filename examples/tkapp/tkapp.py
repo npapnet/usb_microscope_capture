@@ -48,7 +48,11 @@ class TkFrameParameters(tk.Frame):
 class View:
     def __init__(self, master):
         self.master = master
+        self.master.attributes('-topmost', 1)  # keep the master window always on top
         self.create_view_widgets()
+        
+        # after initialisation of object set geometry of window (obsolete)
+        self.master.after(1,self._set_image_window_init_position) # see comments
 
     def create_view_widgets(self):
         self.frame = TkFrameParameters(self.master)
@@ -56,8 +60,22 @@ class View:
 
         self.image_window = tk.Toplevel(self.master)
         self.image_window.withdraw()
+        self.image_window.protocol("WM_DELETE_WINDOW", lambda : None)
+       
         self.image_canvas = tk.Canvas(self.image_window, width=640, height=480)
         self.image_canvas.pack()
+
+    def _set_image_window_init_position(self):
+        """auxilliary function because initialisation 
+        
+        this is run only once during the lifetime of the object. 
+        I could also do it with a lambda fucntion
+        This is not necessary after setting master as topmost.
+        """        
+        x = self.master.winfo_x() + self.master.winfo_width()
+        y = self.master.winfo_y()
+        # Set the position of the image window
+        self.image_window.geometry(f"+{x}+{y}")
 
     def toggle_image_window(self):
         if self.image_window.winfo_viewable():
