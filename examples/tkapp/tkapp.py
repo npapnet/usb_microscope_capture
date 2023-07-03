@@ -28,22 +28,52 @@ class TkFrameParameters(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.camera_id_label = tk.Label(self, text="Camera ID")
-        self.camera_id_label.pack()
-        
-        self.camera_id_entry = tk.Entry(self)
-        self.camera_id_entry.pack()
-        self.camera_id_entry.insert(0, 0)
-        # Add more labels and entries for other parameters
+        # =================== camera  frame
+        camera_frame = tk.LabelFrame(self, text="Camera Parameters")
+        camera_frame.grid(row=0, column=0, padx=5, pady=5)
 
-        self.start_button = tk.Button(self, text='Start Experiment')
-        self.start_button.pack()
+        self.create_labeled_entry(camera_frame, "Camera ID", 0, 0, "0")
+        self.create_labeled_entry(camera_frame, "Camera Width", 1, 0, "640")
+        self.create_labeled_entry(camera_frame, "Camera Height", 2, 0, "480")
 
-        self.stop_button = tk.Button(self, text='Stop Experiment')
-        self.stop_button.pack()
+        # =================== experiment frame
+        experiment_frame = tk.LabelFrame(self, text="Experiment Parameters")
+        experiment_frame.grid(row=1, column=0, padx=5, pady=5)
 
-        self.toggle_button = tk.Button(self, text='Toggle Image Window')
-        self.toggle_button.pack()
+        self.browse_button = tk.Button(experiment_frame, text='Browse', command=self.browse_directory)
+        self.browse_button.grid(row=0, column=0)
+
+        self.folder_label = tk.Label(experiment_frame, text="No directory selected")
+        self.folder_label.grid(row=0, column=1)
+
+        self.create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
+        self.create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
+
+        # =================== action frame
+        action_frame = tk.LabelFrame(self, text="Actions and State")
+        action_frame.grid(row=2, column=0, padx=5, pady=5)
+
+        self.start_button = tk.Button(action_frame, text='Start Experiment', font='bold')
+        self.start_button.grid(row=0, column=0)
+
+        self.stop_button = tk.Button(action_frame, text='Stop Experiment')
+        self.stop_button.grid(row=0, column=1)
+
+        self.toggle_button = tk.Button(action_frame, text='Toggle Image Window')
+        self.toggle_button.grid(row=1, column=0, columnspan=2)
+
+    def create_labeled_entry(self, master, label_text, row, col, default_value):
+        label = tk.Label(master, text=label_text)
+        label.grid(row=row, column=col)
+
+        entry = tk.Entry(master)
+        entry.insert(0, default_value)
+        entry.grid(row=row, column=col+1)
+
+    def browse_directory(self):
+        directory = filedialog.askdirectory(initialdir="captured_images")
+        self.folder_label.configure(text=directory)
+
 
 class View:
     def __init__(self, master):
