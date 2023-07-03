@@ -1,4 +1,4 @@
-
+#%%
 import pathlib
 import time
 import tkinter as tk
@@ -11,15 +11,25 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
 from usb_microscope_capture import Camera, ImageCapturingExperiment
-
+#%%
 
 class Model:
+    """class to hold the MVC model
+    """    
+    camera = None
+    experiment = None
     def __init__(self, camera_id=1, camera_width=640, camera_height=480, delay_ms=500, num_images=50, image_data_dir=pathlib.Path("captured_images")):
+        pass
+        # TODO: this should be empty initially
+        # self.camera = Camera(id=camera_id, width=camera_width, height=camera_height)
+        # self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
+
+    def set_camera(self, camera_id=1, camera_width=640, camera_height=480):
         self.camera = Camera(id=camera_id, width=camera_width, height=camera_height)
-        self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
 
     def set_Experiment(self, camera_id=1, camera_width=640, camera_height=480, delay_ms=500, num_images=150, image_data_dir='.'):
-        # TODO use this METHOD to initialise the experiment
+
+        self.set_camera(camera_id=camera_id, camera_width=camera_width, camera_height=camera_height)
         self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
 
 class TkFrameParameters(tk.Frame):
@@ -110,6 +120,18 @@ class TkFrameParameters(tk.Frame):
             self.status_label.config(text="Not running")
 
     def _create_labeled_entry(self, master, label_text, row, col, default_value):
+        """auxilliary function that automated Label, entry process
+
+        Args:
+            master (_type_): parent widget
+            label_text (_type_): label text
+            row (_type_): row on grid layout
+            col (_type_): col on grid layout
+            default_value (_type_): Initial value 
+
+        Returns:
+            tk.Entry: The created object
+        """        
         label = tk.Label(master, text=label_text)
         label.grid(row=row, column=col)
 
@@ -133,14 +155,14 @@ class View:
         self.master.after(1,self._set_image_window_init_position) # see comments
 
     def create_view_widgets(self):
-        self.frame = TkFrameParameters(self.master)
-        self.frame.pack()
+        self.tkFrameParameters = TkFrameParameters(self.master)
+        self.tkFrameParameters.pack()
 
-        self.image_window = tk.Toplevel(self.master)
-        self.image_window.withdraw()
-        self.image_window.protocol("WM_DELETE_WINDOW", lambda : None)
+        self.tkTL_image_window = tk.Toplevel(self.master)
+        self.tkTL_image_window.withdraw()
+        self.tkTL_image_window.protocol("WM_DELETE_WINDOW", lambda : None)
        
-        self.image_canvas = tk.Canvas(self.image_window, width=640, height=480)
+        self.image_canvas = tk.Canvas(self.tkTL_image_window, width=640, height=480)
         self.image_canvas.pack()
 
     def _set_image_window_init_position(self):
@@ -153,13 +175,13 @@ class View:
         x = self.master.winfo_x() + self.master.winfo_width()
         y = self.master.winfo_y()
         # Set the position of the image window
-        self.image_window.geometry(f"+{x}+{y}")
+        self.tkTL_image_window.geometry(f"+{x}+{y}")
 
     def toggle_image_window(self):
-        if self.image_window.winfo_viewable():
-            self.image_window.withdraw()
+        if self.tkTL_image_window.winfo_viewable():
+            self.tkTL_image_window.withdraw()
         else:
-            self.image_window.deiconify()
+            self.tkTL_image_window.deiconify()
 
     def update_image(self, image_frame):
         # Convert the image frame to a format suitable for Tkinter
@@ -176,7 +198,7 @@ class View:
 
         # Keep a reference to the image object to prevent it from being garbage collected
         self.current_image = image
-        self.image_window.update_idletasks()
+        self.tkTL_image_window.update_idletasks()
 
 
 class Controller:
@@ -186,14 +208,24 @@ class Controller:
         self.model = Model()
         self.view = View(master)
 
-        self.view.frame.start_button.config(command=self.start_experiment)
-        self.view.frame.stop_button.config(command=self.stop_experiment)
-        self.view.frame.toggle_button.config(command=self.view.toggle_image_window)
+        self.view.tkFrameParameters.start_button.config(command=self.start_experiment)
+        self.view.tkFrameParameters.stop_button.config(command=self.stop_experiment)
+        self.view.tkFrameParameters.toggle_button.config(command=self.view.toggle_image_window)
 
     def start_experiment(self):
         # 
+        cam_dict = self.view.tkFrameParameters.get_camera_parameters()
+        exp_dict = self.view.tkFrameParameters.get_experiment_parameters()
+        logging.debug(cam_dict)
+        logging.debug(exp_dict)
+        self.model.set_Experiment(camera_id=cam_dict['cam.id'], camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
+                                 delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
+                                 image_data_dir=pathlib.Path("captured_images")
+                                 # TODO add properly data folder
+                                )
         self.model.experiment.initialise(wait_for_keypress=False)
         self.experiment_state = True
+        self.view.tkFrameParameters.set_running_status(running_flag= self.experiment_state)
         self.master.after(0, self._check_experiment_state)
     
     def _check_experiment_state(self):
@@ -218,6 +250,7 @@ class Controller:
         else:
             # the experiment has finished or stopped
             logging.debug("Experiment Finished (image counter = num images)")
+
             self.model.experiment.finalise()
 
     def stop_experiment(self):
@@ -225,9 +258,12 @@ class Controller:
         print ("Stopping capture experiment prematurely!")
         logging.info("Stopping capture experiment prematurely!")
         self.experiment_state = False
+        self.view.tkFrameParameters.set_running_status(running_flag=self.experiment_state)
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = Controller(root)
     root.mainloop()
+
+# %%

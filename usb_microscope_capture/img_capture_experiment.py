@@ -23,7 +23,7 @@ class ImageCapturingExperiment:
         File object for storing the metadata of captured images.
     """
     GRAYSCALE=True
-    def __init__(self, camera, delay_ms:int, num_images:int, image_folder:pathlib.Path):
+    def __init__(self, camera, delay_ms:int, num_images:int, image_folder:pathlib.Path=pathlib.Path("captured_images")):
         """
         Constructs all the necessary attributes for the image capturing experiment.
 
