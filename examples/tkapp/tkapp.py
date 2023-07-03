@@ -32,9 +32,9 @@ class TkFrameParameters(tk.Frame):
         camera_frame = tk.LabelFrame(self, text="Camera Parameters")
         camera_frame.grid(row=0, column=0, padx=5, pady=5)
 
-        self.create_labeled_entry(camera_frame, "Camera ID", 0, 0, "0")
-        self.create_labeled_entry(camera_frame, "Camera Width", 1, 0, "640")
-        self.create_labeled_entry(camera_frame, "Camera Height", 2, 0, "480")
+        self._tkeCamID = self._create_labeled_entry(camera_frame, "Camera ID", 0, 0, "0")
+        self._tkeCamWidth = self._create_labeled_entry(camera_frame, "Camera Width", 1, 0, "640")
+        self._tkeCamHeight = self._create_labeled_entry(camera_frame, "Camera Height", 2, 0, "480")
 
         # =================== experiment frame
         experiment_frame = tk.LabelFrame(self, text="Experiment Parameters")
@@ -46,8 +46,8 @@ class TkFrameParameters(tk.Frame):
         self.folder_label = tk.Label(experiment_frame, text="No directory selected")
         self.folder_label.grid(row=0, column=1)
 
-        self.create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
-        self.create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
+        self._tkeDelay_ms = self._create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
+        self._tkeNmaxImages = self._create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
 
         # =================== action frame
         action_frame = tk.LabelFrame(self, text="Actions and State")
@@ -62,17 +62,65 @@ class TkFrameParameters(tk.Frame):
         self.toggle_button = tk.Button(action_frame, text='Toggle Image Window')
         self.toggle_button.grid(row=1, column=0, columnspan=2)
 
-    def create_labeled_entry(self, master, label_text, row, col, default_value):
+        self.status_indicator = tk.Canvas(action_frame, width=20, height=20)
+        self.status_indicator.grid(row=2, column=0)
+        self.status_indicator.create_oval(2, 2, 18, 18, fill="red")
+
+        self.status_label = tk.Label(action_frame, text="Not running")
+        self.status_label.grid(row=2, column=1)
+
+
+    def get_camera_parameters(self) -> dict:
+        """Extracts the camera parameters from the Entry fields and returns them as a dictionary.
+
+        Returns:
+            dict: A dictionary where the keys are the parameter names and the values are the parameter values.
+        """
+        cam_id = int(self._tkeCamID.get())
+        cam_width = int(self._tkeCamWidth.get())
+        cam_height = int(self._tkeCamHeight.get())
+
+        return {"cam.id": cam_id, "cam.width": cam_width, "cam.height": cam_height}
+    
+    def get_experiment_parameters(self):
+        return {
+            "data_folder": self._data_directory,
+            "delay_ms": int(self._tkeDelay_ms.get()),
+            "no_images": int(self._tkeNmaxImages.get())
+        }
+    
+    def set_running_status(self, running_flag:bool)->None:
+        """Changes the color of the status indicator and label text based on the running status of the experiment.
+    
+        This method changes the color of the status indicator to green if the experiment is running, 
+        and to red if it's not running. The text of the label is changed accordingly to "Running" or "Not running".
+
+        Args:
+            running_flag (bool): Flag indicating whether the experiment is currently running. 
+                                If True, the experiment is running; otherwise, it's not running.
+
+        Returns:
+            None
+        """
+        if running_flag:
+            self.status_indicator.itemconfig(1, fill="green")
+            self.status_label.config(text="Running")
+        else:
+            self.status_indicator.itemconfig(1, fill="red")
+            self.status_label.config(text="Not running")
+
+    def _create_labeled_entry(self, master, label_text, row, col, default_value):
         label = tk.Label(master, text=label_text)
         label.grid(row=row, column=col)
 
         entry = tk.Entry(master)
         entry.insert(0, default_value)
         entry.grid(row=row, column=col+1)
+        return entry
 
     def browse_directory(self):
-        directory = filedialog.askdirectory(initialdir="captured_images")
-        self.folder_label.configure(text=directory)
+        self._data_directory = filedialog.askdirectory(initialdir="captured_images")
+        self.folder_label.configure(text=self._data_directory)
 
 
 class View:
