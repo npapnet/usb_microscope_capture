@@ -19,7 +19,7 @@ class Model:
         self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
 
     def set_Experiment(self, camera_id=1, camera_width=640, camera_height=480, delay_ms=500, num_images=150, image_data_dir='.'):
-        # TODO use this app to initialise the experiment
+        # TODO use this METHOD to initialise the experiment
         self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
 
 class TkFrameParameters(tk.Frame):
