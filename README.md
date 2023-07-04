@@ -19,6 +19,23 @@ This is written and tested for an OEM digital Microscope with 500x zoom (probabl
 ```{bash}
 python setup.py install
 ```
+### Camera drivers troubleshooting.
+
+The model I used and testd is based on Genesys Logic UVC Camera controller. This model although supported gave me trouble is some of my development machines (in others no). More Specifically what I encountered was the following:
+
+I have :
+- a Lenovo desktop laptop that worked without problems.
+- Another desktopworked sometimes and sometimes didn't work. I had obs studio installed, and in some occasions what I saw was that the first image showed the obs studio icon, so I suspect there might be some interplay there, but could not confirm it. 
+
+When  I checked the Windows device manager, I saw that the hardward ID was  `USB\VID_05E3&PID_0510&MI_00`, which corresponds (upon search on the internet) to Lenovo Easy camera. This might explain Why the Lenovo computer worked without problems.
+
+What I ended up doing was to instal the drivers that came with the usb microscope. This solved the problem.Then I change the driversto GL 2.0 UVC camera device (the GenesysLogic Driver). the updated driver Has driver date 3/11/2014 and driver version 14.3.11.0.
+
+The files of the driver as presented in Driver details are:
+- system32\Drivers\glavcam.sys
+- system32\ksthunk.sys
+- sysWOW64\glprop.ax
+- sysWOW64\uninstall.dll
 
 # 3. Example code
 

@@ -23,7 +23,7 @@ class ImageCapturingExperiment:
         File object for storing the metadata of captured images.
     """
     GRAYSCALE=True
-    def __init__(self, camera, delay_ms:int, num_images:int, image_folder:pathlib.Path):
+    def __init__(self, camera, delay_ms:int, num_images:int, image_folder:pathlib.Path=pathlib.Path("captured_images")):
         """
         Constructs all the necessary attributes for the image capturing experiment.
 
@@ -51,7 +51,7 @@ class ImageCapturingExperiment:
         Args:
             wait_for_keypress (bool, optional): _description_. Defaults to True.
         """        
-        self.camera.initialise()
+        self.camera.initialise() # TODO camera should already be initialised. 
         assert self.camera.check_operation() , "Camera not working or not connected. Exiting...." 
         if wait_for_keypress: # this is for compatibility with the console application
             input(" >> Press ENTER key to proceed. <<")
@@ -67,7 +67,7 @@ class ImageCapturingExperiment:
         Initialises the test folder where images will be stored and creates a metadata file.
         """
         self.test_start_timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-        self.test_folder =self.image_folder / f"test-{self.test_start_timestamp}"
+        self.test_folder = self.image_folder / f"test-{self.test_start_timestamp}"
         self.test_folder.mkdir(parents=True, exist_ok=True)
         print(self.test_folder)
         self.test_metadata_fname = self.test_folder / f"metadata_{self.test_start_timestamp}.txt"
