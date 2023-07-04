@@ -1,3 +1,6 @@
+# **IMPORTANT** this is now obsolete. Because all the GUI classes have been moved inside the package
+# users should use the tkapp_light.py
+
 #%%
 import pathlib
 import time

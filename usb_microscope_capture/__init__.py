@@ -3,3 +3,4 @@
 from .camera_device import Camera
 from .img_capture_experiment import ImageCapturingExperiment
 from ._misc import run_experiment
+from .gui.mvc_controller import tkapp_Controller
