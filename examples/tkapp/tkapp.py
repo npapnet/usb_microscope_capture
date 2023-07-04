@@ -2,7 +2,7 @@
 import pathlib
 import time
 import tkinter as tk
-from tkinter import filedialog, ttk
+from tkinter import filedialog, messagebox
 
 import cv2
 from PIL import Image, ImageTk
@@ -16,25 +16,34 @@ from usb_microscope_capture import Camera, ImageCapturingExperiment
 class Model:
     """class to hold the MVC model
     """    
+    _tkapp_dir = None
     camera = None
     experiment = None
-    def __init__(self, camera_id=1, camera_width=640, camera_height=480, delay_ms=500, num_images=50, image_data_dir=pathlib.Path("captured_images")):
+    def __init__(self, starting_dir:pathlib.Path ): # image_data_dir=pathlib.Path("captured_images")):
+        self._tkapp_dir = starting_dir
         pass
         # TODO: this should be empty initially
         # self.camera = Camera(id=camera_id, width=camera_width, height=camera_height)
         # self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
 
-    def set_camera(self, camera_id=1, camera_width=640, camera_height=480):
+    def set_camera(self, camera_id:int, camera_width:int=640, camera_height:int=480):
+        try:
+            self.camera.release()
+        except:
+            pass
         self.camera = Camera(id=camera_id, width=camera_width, height=camera_height)
+        # self.camera.initialise()
 
-    def set_Experiment(self, camera_id=1, camera_width=640, camera_height=480, delay_ms=500, num_images=150, image_data_dir='.'):
-
+    def set_Experiment(self, camera_id:int, camera_width:int=640, camera_height:int=480, delay_ms=500, num_images=150, image_data_dir='.'):
         self.set_camera(camera_id=camera_id, camera_width=camera_width, camera_height=camera_height)
         self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
 
 class TkFrameParameters(tk.Frame):
-    def __init__(self, master=None, **kwargs):
+    _data_directory = None
+    def __init__(self, master, starting_dir,**kwargs):
         super().__init__(master, **kwargs)
+        self._tk_app_dir = starting_dir
+
         self.create_widgets()
 
     def create_widgets(self):
@@ -50,11 +59,12 @@ class TkFrameParameters(tk.Frame):
         experiment_frame = tk.LabelFrame(self, text="Experiment Parameters")
         experiment_frame.grid(row=1, column=0, padx=5, pady=5)
 
-        self.browse_button = tk.Button(experiment_frame, text='Browse', command=self.browse_directory)
-        self.browse_button.grid(row=0, column=0)
+        self.folder_label = tk.Label(experiment_frame, text="Data Folder")
+        self.folder_label.grid(row=0, column=0)
 
-        self.folder_label = tk.Label(experiment_frame, text="No directory selected")
-        self.folder_label.grid(row=0, column=1)
+        self.browse_button = tk.Button(experiment_frame, text='Browse', command=self.browse_directory)
+        self.browse_button.grid(row=0, column=1)
+
 
         self._tkeDelay_ms = self._create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
         self._tkeNmaxImages = self._create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
@@ -93,6 +103,16 @@ class TkFrameParameters(tk.Frame):
         return {"cam.id": cam_id, "cam.width": cam_width, "cam.height": cam_height}
     
     def get_experiment_parameters(self):
+        if not self._data_directory:
+            if messagebox.askokcancel("Data Directory Not Set",
+                                      "The data directory has not been initialised. "
+                                      "Please select a directory to store the images."):
+                self.browse_directory()  # prompt the user to select a folder
+            else:
+                self._data_directory = self._tk_app_dir / "captured_images/"
+                self._data_directory.mkdir(parents=True, exist_ok=True)
+                # self.folder_label["text"] = str(self._data_directory)
+
         return {
             "data_folder": self._data_directory,
             "delay_ms": int(self._tkeDelay_ms.get()),
@@ -141,13 +161,16 @@ class TkFrameParameters(tk.Frame):
         return entry
 
     def browse_directory(self):
-        self._data_directory = filedialog.askdirectory(initialdir="captured_images")
-        self.folder_label.configure(text=self._data_directory)
+        self._data_directory = pathlib.Path(filedialog.askdirectory(initialdir=self._tk_app_dir))
+        # self.folder_label.configure(text=self._data_directory)
 
 
 class View:
-    def __init__(self, master):
+    _tk_app_dir = None
+    def __init__(self, master, starting_dir:pathlib.Path):
         self.master = master
+        self._tk_app_dir = starting_dir
+
         self.master.attributes('-topmost', 1)  # keep the master window always on top
         self.create_view_widgets()
         
@@ -155,7 +178,7 @@ class View:
         self.master.after(1,self._set_image_window_init_position) # see comments
 
     def create_view_widgets(self):
-        self.tkFrameParameters = TkFrameParameters(self.master)
+        self.tkFrameParameters = TkFrameParameters(self.master, starting_dir=self._tk_app_dir)
         self.tkFrameParameters.pack()
 
         self.tkTL_image_window = tk.Toplevel(self.master)
@@ -203,10 +226,11 @@ class View:
 
 class Controller:
     experiment_state = False
-    def __init__(self, master):
+    def __init__(self, master, starting_dir):
         self.master = master
-        self.model = Model()
-        self.view = View(master)
+        
+        self.model = Model(starting_dir = starting_dir)
+        self.view = View(master, starting_dir = starting_dir)
 
         self.view.tkFrameParameters.start_button.config(command=self.start_experiment)
         self.view.tkFrameParameters.stop_button.config(command=self.stop_experiment)
@@ -220,8 +244,8 @@ class Controller:
         logging.debug(exp_dict)
         self.model.set_Experiment(camera_id=cam_dict['cam.id'], camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
                                  delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
-                                 image_data_dir=pathlib.Path("captured_images")
-                                 # TODO add properly data folder
+                                 image_data_dir=exp_dict['data_folder'] 
+                                 #pathlib.Path("captured_images")
                                 )
         self.model.experiment.initialise(wait_for_keypress=False)
         self.experiment_state = True
@@ -232,6 +256,7 @@ class Controller:
         """this is a function that is performed periodically using the after function
         """        
         next_update_ms = 100
+        FACTOR = 0.75
         if (self.model.experiment.image_counter < self.model.experiment.num_images) and (self.experiment_state==True):
             curr_time_s = time.time()
             time_since_last_capture_s = curr_time_s - self.model.experiment.last_capture_timestamp 
@@ -240,11 +265,11 @@ class Controller:
                 self.model.experiment.last_capture_timestamp = curr_time_s
                 frame = self.model.experiment.capture_image(curr_time_s)
                 self.view.update_image(frame) 
-                next_update_ms = int(self.model.experiment.delay_ms/2)
+                next_update_ms = int(self.model.experiment.delay_ms*FACTOR)
                 logging.debug(f"    - captured: {self.model.experiment.image_counter }, next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
             else:
                 # not enough time passed wait a few ms
-                next_update_ms = max(1, int((self.model.experiment.delay_ms -time_since_last_capture_s*1000)/2))
+                next_update_ms = max(1, int((self.model.experiment.delay_ms -time_since_last_capture_s*1000)*FACTOR))
                 logging.debug(f"               >    next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
             self.master.after(next_update_ms, self._check_experiment_state)    
         else:
@@ -262,8 +287,10 @@ class Controller:
 
 
 if __name__ == "__main__":
+    script_dir = pathlib.Path(__file__).resolve().parent
+    print(script_dir)
     root = tk.Tk()
-    app = Controller(root)
+    app = Controller(root, starting_dir=script_dir)
     root.mainloop()
 
 # %%
