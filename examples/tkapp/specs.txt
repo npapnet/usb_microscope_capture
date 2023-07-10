@@ -1,0 +1,41 @@
+The following is a prompt that should give the same result (I fed to code interpreter my code and ask it to provide the prompt)
+
+**Title:** Development of an Image Capturing Software with USB Microscope
+
+**Project Description:** 
+
+We are seeking the development of a Python-based software that controls a USB microscope for image capturing experiments. The software should provide a graphical user interface (GUI) for users to configure the camera and experiment parameters, control the experiment, and view the captured images. The software should use the Model-View-Controller (MVC) design pattern and the Tkinter library for GUI.
+
+**Functional Requirements:**
+
+1. **Camera Configuration:** The software should allow the user to configure the following parameters of the USB microscope:
+   - Camera ID
+   - Camera Width
+   - Camera Height
+
+2. **Experiment Configuration:** The software should allow the user to configure the following parameters of the image capturing experiment:
+   - Data Folder: The directory where the captured images are saved.
+   - Delay (ms): The delay between two consecutive image captures.
+   - Number of Images: The total number of images to be captured in the experiment.
+
+3. **Experiment Control:** The software should provide buttons for starting and stopping the experiment.
+
+4. **Image Display:** The software should display the captured images in a separate window that can be toggled on/off.
+
+**Non-Functional Requirements:**
+
+1. **Main Window:** The main window should contain all the controls for camera configuration, experiment configuration, and experiment control. The window should always stay on top of all other windows.
+
+2. **Image Window:** This should be a separate window that displays the captured images. The window should be toggled on/off by a button in the main window. The image window should be positioned next to the main window by default, but it should be free-floating, i.e., the user can move it around independently of the main window.
+
+3. **Image Capturing:** The software should use the Tkinter `after` method to control the timing of image captures. After an image is captured, the software should schedule the next image capture after the specified delay.
+
+**Programming Language:** Python
+
+**External Libraries:** Tkinter for GUI, OpenCV and PIL for image processing, and an appropriate library for controlling the USB microscope and performing the image capturing experiment.
+
+**Project Timeline:** [Specify the timeline]
+
+**Deliverables:** Source code, documentation (including installation, usage, and API documentation), and test cases.
+
+Please note that the choice of the library for controlling the USB microscope and performing the image capturing experiment would depend on the specific model of the microscope and the operating system. You would need to research and choose the appropriate library for your specific requirements.
