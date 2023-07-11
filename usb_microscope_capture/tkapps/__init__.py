@@ -1,2 +1,2 @@
 from .tkapp_capture_only import tkapp_capture_light_stack
-from .tkapp_capture_only import tkapp_capture_light
+from .tkapp_capture_only import tkapp_capture_light_dummy_func
