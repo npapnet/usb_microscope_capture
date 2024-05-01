@@ -53,6 +53,9 @@ class TkFrameParameters(tk.Frame):
         self.toggle_button = tk.Button(action_frame, text='Toggle Image Window')
         self.toggle_button.grid(row=1, column=0, columnspan=2)
 
+        self.toggle_setup_capture_button = tk.Button(action_frame, text='Toggle Image Capture for Setup')
+        self.toggle_setup_capture_button.grid(row=3, column=0, columnspan=2)
+
         self.status_indicator = tk.Canvas(action_frame, width=20, height=20)
         self.status_indicator.grid(row=2, column=0)
         self.status_indicator.create_oval(2, 2, 18, 18, fill="red")
