@@ -28,6 +28,8 @@ class Model:
         except:
             pass
         self.camera = Camera(id=camera_id, width=camera_width, height=camera_height)
+        logging.info("Setting width: {camera_width} px")
+        logging.info("Setting height: {camera_heigjt} px")
         # self.camera.initialise()
 
     def set_Experiment(self, camera_id:int, camera_width:int=640, camera_height:int=480, delay_ms=500, num_images=150, image_data_dir='.'):

@@ -72,7 +72,10 @@ class ImageCapturingExperiment:
         print(self.test_folder)
         self.test_metadata_fname = self.test_folder / f"metadata_{self.test_start_timestamp}.txt"
         self.metadata_fobj = open(self.test_metadata_fname, "w")
-        self.metadata_fobj.write('ID \t elapsed\n')
+        # self.metadata_fobj.write('ID \t elapsed\n')
+        self.metadata_fobj.write('file\ttime(s)\tforce(N)\n') 
+        # TODO this is a hack meant only for compatibility with the current version of DIC
+        # Essentially the force is a counter for the images. 
 
     def capture_image(self, curr_time_s:float):
         """ Captures an image, converts it to grayscale if required, and saves it along with its metadata.
@@ -96,7 +99,7 @@ class ImageCapturingExperiment:
         self._write_img_file(frame)
 
         # write metadata file
-        self.metadata_fobj.write(f"{self.image_counter}\t {elapsed_time:010.3f}\n")
+        self.metadata_fobj.write(f"img_{self.image_counter:05d}.png\t {elapsed_time:010.3f}\t{self.image_counter}\n")
 
         self.last_capture_timestamp = curr_time_s
         self.image_counter += 1

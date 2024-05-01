@@ -23,8 +23,8 @@ class TkFrameParameters(tk.Frame):
         camera_frame.grid(row=0, column=0, padx=5, pady=5)
 
         self._tkeCamID = self._create_labeled_entry(camera_frame, "Camera ID", 0, 0, "0")
-        self._tkeCamWidth = self._create_labeled_entry(camera_frame, "Camera Width", 1, 0, "640")
-        self._tkeCamHeight = self._create_labeled_entry(camera_frame, "Camera Height", 2, 0, "480")
+        self._tkeCamWidth = self._create_labeled_entry(camera_frame, "Camera Width", 1, 0, "1280") # 640
+        self._tkeCamHeight = self._create_labeled_entry(camera_frame, "Camera Height", 2, 0, "720") # 480
 
         # =================== experiment frame
         experiment_frame = tk.LabelFrame(self, text="Experiment Parameters")
@@ -156,6 +156,8 @@ class View:
         self.tkTL_image_window.withdraw()
         self.tkTL_image_window.protocol("WM_DELETE_WINDOW", lambda : None)
        
+        #TODO: Widht and height should be adjustable based on what the camera settings are.
+        # need to see the lifetime of the tkTL_image_window in order to access that. 
         self.image_canvas = tk.Canvas(self.tkTL_image_window, width=640, height=480)
         self.image_canvas.pack()
 

@@ -22,4 +22,5 @@ from usb_microscope_capture.tkapps import tkapp_capture_light_stack
 if __name__ == "__main__": 
         tkapp_capture_light_stack()
 
+# FIX with the HD microscope 1280x720 the data is captured however the image is not properly displayed
 # %%
