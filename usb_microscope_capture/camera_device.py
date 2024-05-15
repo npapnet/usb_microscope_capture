@@ -17,18 +17,14 @@ Dependencies:
     - logging: This module is used for logging.
     - cv2: This is an OpenCV module for working with images and videos.
 """
-
 import time
 from abc import ABC, abstractmethod
 import logging
-
 import cv2
-
 
 class AbstractCamera(ABC):
     """
     Abstract Camera class that defines the basic interface for a camera.
-
     """
 
     @abstractmethod
@@ -62,7 +58,6 @@ class AbstractCamera(ABC):
 class Camera(AbstractCamera):
     """
     Concrete implementation of the AbstractCamera class.
-
     """
 
     def __init__(self, id, width, height, init=False):
@@ -98,6 +93,32 @@ class Camera(AbstractCamera):
         # self._camera_device.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
         # self._camera_device.set(cv2.CAP_PROP_EXPOSURE, -7.0)
         time.sleep(initial_delay_s)
+
+    def set_exposure(self, exposure_value: float) -> None:
+        """
+        Sets the exposure for the camera.
+
+        Args:
+            exposure_value (float): The exposure value to be set.
+        """
+        if self._camera_device is not None:
+            logging.debug(f"Setting camera exposure to {exposure_value}")
+            self._camera_device.set(cv2.CAP_PROP_EXPOSURE, exposure_value)
+        else:
+            logging.error("Camera device is not initialized.")
+
+    def set_gain(self, gain_value: float) -> None:
+        """
+        Sets the gain for the camera.
+
+        Args:
+            gain_value (float): The gain value to be set.
+        """
+        if self._camera_device is not None:
+            logging.debug(f"Setting camera gain to {gain_value}")
+            self._camera_device.set(cv2.CAP_PROP_GAIN, gain_value)
+        else:
+            logging.error("Camera device is not initialized.")
 
     def capture_image(self):
         """
