@@ -10,7 +10,7 @@ from PIL import Image, ImageTk
 import logging
 logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
-from usb_microscope_capture import Camera, ImageCapturingExperiment
+from usb_microscope_capture import Camera_Generic, ImageCapturingExperiment
 from .mvc_model import Model
 from .mvc_view import View 
 

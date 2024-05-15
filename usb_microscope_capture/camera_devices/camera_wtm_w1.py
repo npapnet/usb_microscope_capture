@@ -18,44 +18,14 @@ Dependencies:
     - cv2: This is an OpenCV module for working with images and videos.
 """
 import time
-from abc import ABC, abstractmethod
 import logging
+import numpy as np
 import cv2
 
-class AbstractCamera(ABC):
-    """
-    Abstract Camera class that defines the basic interface for a camera.
-    """
+from .camera_device_abstract import AbstractCamera
 
-    @abstractmethod
-    def initialise(self):
-        """
-        This method is intended to set up the camera for operation.
-        """
-        pass
 
-    @abstractmethod
-    def check_operation(self):
-        """
-        This method is intended to verify if the camera is functioning correctly.
-        """
-        pass
-
-    @abstractmethod
-    def capture_image(self):
-        """
-        This method is intended to capture an image using the camera.
-        """
-        pass
-
-    @abstractmethod
-    def release(self):
-        """
-        This method is intended to release the resources held by the camera.
-        """
-        pass
-
-class Camera(AbstractCamera):
+class Camera_WTM_W1(AbstractCamera):
     """
     Concrete implementation of the AbstractCamera class.
     """
@@ -120,14 +90,18 @@ class Camera(AbstractCamera):
         else:
             logging.error("Camera device is not initialized.")
 
-    def capture_image(self):
+    def capture_image(self, roi:list = None) -> np.ndarray:
         """
         Captures an image using the camera.
-
+s
         Returns:
             numpy.ndarray: The captured image.
         """
         ret, frame = self._camera_device.read()
+        if roi is not None:
+            x, y, w, h = roi
+            frame = frame[y:y+h, x:x+w]
+
         return frame
 
     def release(self) -> None:
