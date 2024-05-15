@@ -53,6 +53,8 @@ class TkFrameParameters(tk.Frame):
         self.toggle_button = tk.Button(action_frame, text='Toggle Image Window')
         self.toggle_button.grid(row=1, column=0, columnspan=2)
 
+
+
         self.status_indicator = tk.Canvas(action_frame, width=20, height=20)
         self.status_indicator.grid(row=2, column=0)
         self.status_indicator.create_oval(2, 2, 18, 18, fill="red")
@@ -60,7 +62,9 @@ class TkFrameParameters(tk.Frame):
         self.status_label = tk.Label(action_frame, text="Not running")
         self.status_label.grid(row=2, column=1)
 
-
+        self.toggle_setup_capture_button = tk.Button(action_frame, text='Toggle Image Capture for Setup')
+        self.toggle_setup_capture_button.grid(row=3, column=0, columnspan=2)
+        
     def get_camera_parameters(self) -> dict:
         """Extracts the camera parameters from the Entry fields and returns them as a dictionary.
 
@@ -157,8 +161,9 @@ class View:
         self.tkTL_image_window.protocol("WM_DELETE_WINDOW", lambda : None)
        
         #TODO: Widht and height should be adjustable based on what the camera settings are.
-        # need to see the lifetime of the tkTL_image_window in order to access that. 
-        self.image_canvas = tk.Canvas(self.tkTL_image_window, width=640, height=480)
+        # need to see the lifetime of the tkTL_image_window in order to access that.
+        #TODO Should apply scaling or adding scrollbars 
+        self.image_canvas = tk.Canvas(self.tkTL_image_window, width=1280, height=720)
         self.image_canvas.pack()
 
     def _set_image_window_init_position(self):

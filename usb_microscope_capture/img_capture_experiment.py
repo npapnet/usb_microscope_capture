@@ -5,6 +5,7 @@ from datetime import datetime
 import cv2
 
 
+import logging
 class ImageCapturingExperiment:
     """
     A class to represent an image capturing experiment.
@@ -45,22 +46,25 @@ class ImageCapturingExperiment:
         
         self.metadata_fobj = None
         
-    def initialise(self, wait_for_keypress:bool=True):
+    def initialise(self, wait_for_keypress:bool=True, setup_capture:bool = False):
         """_summary_
 
         Args:
             wait_for_keypress (bool, optional): _description_. Defaults to True.
+            setup_capture (bool, optional): This is a bool option that determines if the current is for setup only or needs recording. 
         """        
         self.camera.initialise() # TODO camera should already be initialised. 
         assert self.camera.check_operation() , "Camera not working or not connected. Exiting...." 
         if wait_for_keypress: # this is for compatibility with the console application
             input(" >> Press ENTER key to proceed. <<")
         
-        self._init_test_folder() 
-        # initialise timestamps
+        if not setup_capture:
+            self._init_test_folder() 
+            # initialise timestamps
+
         self.start_timestamp = time.time()
         self.last_capture_timestamp = self.start_timestamp 
-        self.image_counter = 0
+        self.image_counter = 0  # TODO THis does not make sense in the setup environment (this is a HACK)
 
     def _init_test_folder(self):
         """
@@ -77,13 +81,15 @@ class ImageCapturingExperiment:
         # TODO this is a hack meant only for compatibility with the current version of DIC
         # Essentially the force is a counter for the images. 
 
-    def capture_image(self, curr_time_s:float):
-        """ Captures an image, converts it to grayscale if required, and saves it along with its metadata.
+    def capture_image(self, curr_time_s:float, record_to_disk:bool=True):
+        """ Captures an image, converts it to grayscale if required, and optionally saves it along with its metadata.
 
         Parameters
         ----------
         curr_time_s : float
             The current timestamp.
+        record_to_disk : bool
+            Boolean flag that optionally allows the data to be stored to disk (Defaults to True)
 
         Returns
         -------
@@ -96,10 +102,10 @@ class ImageCapturingExperiment:
         if self.GRAYSCALE:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        self._write_img_file(frame)
-
-        # write metadata file
-        self.metadata_fobj.write(f"img_{self.image_counter:05d}.png\t {elapsed_time:010.3f}\t{self.image_counter}\n")
+        if record_to_disk:
+            self._write_img_file(frame)
+            # write metadata file
+            self.metadata_fobj.write(f"img_{self.image_counter:05d}.png\t {elapsed_time:010.3f}\t{self.image_counter}\n")
 
         self.last_capture_timestamp = curr_time_s
         self.image_counter += 1
@@ -125,5 +131,9 @@ class ImageCapturingExperiment:
         """
         cv2.destroyAllWindows()
         self.camera.release()
-        self.metadata_fobj.close()
+        try:            
+            self.metadata_fobj.close()
+        except:
+            logging.info("Could not close file")
+
 

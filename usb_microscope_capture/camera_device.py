@@ -41,6 +41,10 @@ class Camera(AbstractCamera):
         self._camera_device = cv2.VideoCapture(self.id, cv2.CAP_DSHOW)
         self._camera_device.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self._camera_device.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+        #TODO look at https://github.com/opencv/opencv/issues/9738 and https://answers.opencv.org/question/112/autogain-how-to-disable-autogain-and-set-a-fixed-value/
+        #    for removing autoexposure
+        # self._camera_device.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
+        # self._camera_device.set(cv2.CAP_PROP_EXPOSURE, -7.0)
         time.sleep(initial_delay_s)
 
     def capture_image(self):
