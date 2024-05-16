@@ -1,9 +1,15 @@
+"""
+View of usb microscope
+"""
+
 import pathlib
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
 import cv2
 from PIL import Image, ImageTk
+from usb_microscope_capture.gui.tkwidgets.tk_camera_settings import CameraSettingsFrame
+
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -25,6 +31,13 @@ class TkFrameParameters(tk.Frame):
         self._tkeCamID = self._create_labeled_entry(camera_frame, "Camera ID", 0, 0, "0")
         self._tkeCamWidth = self._create_labeled_entry(camera_frame, "Camera Width", 1, 0, "1280") # 640
         self._tkeCamHeight = self._create_labeled_entry(camera_frame, "Camera Height", 2, 0, "720") # 480
+
+
+        # =================== Camera settings frame
+        self.camera_settings_frame = CameraSettingsFrame(self)
+        self.camera_settings_frame.grid(row=0, column=1, padx=5, pady=5, sticky="we")
+
+
 
         # =================== experiment frame
         experiment_frame = tk.LabelFrame(self, text="Experiment Parameters")
