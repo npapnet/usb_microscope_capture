@@ -10,7 +10,7 @@ import cv2
 from PIL import Image, ImageTk
 
 from .tk_camera_settings import CameraSettingsFrame
-
+from usb_microscope_capture.camera_devices.camera_factory import CameraFactory 
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -21,6 +21,8 @@ class TkFrameParameters(tk.Frame):
     def __init__(self, master, starting_dir,**kwargs):
         super().__init__(master, **kwargs)
         self._tk_app_dir = starting_dir
+        
+        self._camera_factory = CameraFactory()
 
         self.create_widgets()
 
@@ -36,6 +38,7 @@ class TkFrameParameters(tk.Frame):
 
         # =================== Camera settings frame
         self.camera_settings_frame = CameraSettingsFrame(self)
+        self.camera_settings_frame.set_camera_options(self._camera_factory.get_camera_types())
         self.camera_settings_frame.grid(row=0, column=1, padx=5, pady=5, sticky="we")
 
 
