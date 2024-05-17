@@ -91,6 +91,9 @@ class TkMainFrame(tk.Frame):
         self.toggle_setup_capture_button = tk.Button(action_frame, text='Toggle Image Capture for Setup')
         self.toggle_setup_capture_button.grid(row=3, column=0, columnspan=2, sticky="ew")
         
+        # ============== Set callbacks
+        self._tkf_camera_type.set_roi_callback(self.camera_settings_frame.update_settings_upon_device_change)
+        self._tkf_camera_type._on_camera_selection_change()
         
     def get_camera_parameters(self) -> dict:
         """Extracts the camera parameters from the Entry fields and returns them as a dictionary.

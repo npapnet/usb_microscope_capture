@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from usb_microscope_capture.camera_devices import AbstractCamera
+
 class TkFrameCameraSettings(tk.LabelFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, text="Camera Settings", **kwargs)
@@ -113,3 +115,14 @@ class TkFrameCameraSettings(tk.LabelFrame):
 
     def get_rotation(self):
         return self.rotation_var.get()
+
+    def update_settings_upon_device_change(self, camera_device:AbstractCamera):
+        """ this is a callback function that is called when the camera device is changed
+
+        This is called in the tk_frame_camera_type.py file when the camera device is changed
+        """
+        self.x_var.set(str(0))
+        self.y_var.set(str(0))
+        self.dx_var.set(camera_device.width)
+        self.dy_var.set(camera_device.height)
+

@@ -4,6 +4,7 @@ from usb_microscope_capture.camera_devices import CameraFactory, AbstractCamera
 class tkFrameCameraType(tk.LabelFrame):
     camera_factory: CameraFactory = None
     _camera_device: AbstractCamera = None
+    _reinitialise_roi_upon_camera_change  = None
 
     def __init__(self, master, camera_factory:CameraFactory= None,**kwargs):
         super().__init__(master, text="Camera type", **kwargs)
@@ -74,9 +75,13 @@ class tkFrameCameraType(tk.LabelFrame):
                 self._camera_device = self.camera_factory._cameras.get(selected_camera)
                 if self._camera_device:
                     self.update_dimensions_from_device()
+                    self._reinitialise_roi_upon_camera_change(self._camera_device)
         except Exception as e:
             print(f"Error: {e}")
             pass
+
+    def set_roi_callback(self, callback):  
+        self._reinitialise_roi_upon_camera_change = callback
 
     def update_dimensions_from_device(self):
         """Update the max width and height from the selected camera device"""
