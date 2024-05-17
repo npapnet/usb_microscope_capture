@@ -1,6 +1,6 @@
 import tkinter as tk
 
-class CameraSettingsFrame(tk.LabelFrame):
+class TkFrameCameraSettings(tk.LabelFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, text="Camera Settings", **kwargs)
         
@@ -11,10 +11,6 @@ class CameraSettingsFrame(tk.LabelFrame):
         self._layout_widgets()
         
     def _create_widgets(self):
-        # Camera dropdown
-        self.camera_label = tk.Label(self, text="Camera Model:")
-        self.camera_var = tk.StringVar()
-        self.camera_dropdown = tk.OptionMenu(self, self.camera_var, "")
 
         # Exposure time
         self.exposure_label = tk.Label(self, text="Exposure time:")
@@ -52,8 +48,6 @@ class CameraSettingsFrame(tk.LabelFrame):
         self.rotation_slider = tk.Scale(self.roi_frame, variable=self.rotation_var, from_=-90, to=90, resolution=0.1, orient=tk.HORIZONTAL)
 
     def _layout_widgets(self):
-        self.camera_label.grid(row=0, column=0, sticky='e')
-        self.camera_dropdown.grid(row=0, column=1, sticky='we')
 
         self.exposure_label.grid(row=1, column=0, sticky='e')
         self.exposure_entry.grid(row=1, column=1, sticky='we')
@@ -77,12 +71,6 @@ class CameraSettingsFrame(tk.LabelFrame):
 
         self.rotation_label.grid(row=4, column=0, sticky='e')
         self.rotation_slider.grid(row=4, column=1, sticky='we')
-
-    def set_camera_options(self, camera_list):
-        menu = self.camera_dropdown['menu']
-        menu.delete(0, 'end')
-        for camera in camera_list:
-            menu.add_command(label=camera, command=lambda value=camera: self.camera_var.set(value))
 
     def set_exposure_range(self, min_val, max_val):
         self.exposure_entry.config(validate='key', validatecommand=(self.register(self._validate_exposure), '%P'))

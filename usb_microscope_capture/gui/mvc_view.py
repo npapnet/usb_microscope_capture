@@ -9,7 +9,7 @@ from tkinter import filedialog, messagebox
 import cv2
 from PIL import Image, ImageTk
 
-from usb_microscope_capture.gui.tkwidgets.tk_frame_parameters import TkFrameParameters
+from usb_microscope_capture.gui.tkwidgets.tk_main_frame import TkMainFrame
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -29,7 +29,7 @@ class View:
         self.master.after(1,self._set_image_window_init_position) # see comments
 
     def create_view_widgets(self):
-        self.tkFrameParameters = TkFrameParameters(self.master, starting_dir=self._tk_app_dir)
+        self.tkFrameParameters = TkMainFrame(self.master, starting_dir=self._tk_app_dir)
         self.tkFrameParameters.pack()
 
         self.tkTL_image_window = tk.Toplevel(self.master)

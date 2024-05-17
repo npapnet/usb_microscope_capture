@@ -9,38 +9,36 @@ from tkinter import filedialog, messagebox
 import cv2
 from PIL import Image, ImageTk
 
-from .tk_camera_settings import CameraSettingsFrame
+from .tk_frame_camera_type import tkFrameCameraType
+from .tk_camera_settings import TkFrameCameraSettings
 from usb_microscope_capture.camera_devices.camera_factory import CameraFactory 
+
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-class TkFrameParameters(tk.Frame):
+class TkMainFrame(tk.Frame):
     _data_directory = None
+    _camera_factory = CameraFactory()
     def __init__(self, master, starting_dir,**kwargs):
         super().__init__(master, **kwargs)
         self._tk_app_dir = starting_dir
         
-        self._camera_factory = CameraFactory()
-
         self.create_widgets()
 
     def create_widgets(self):
-        # =================== camera  frame
-        camera_frame = tk.LabelFrame(self, text="Camera Parameters")
-        camera_frame.grid(row=0, column=0, padx=5, pady=5)
+        # =================== camera Seting Labeled Frame frame
+        tkLF_camera_frame = tk.LabelFrame(self, text="Camera Parameters")
+        tkLF_camera_frame.grid(row=0, column=0, padx=5, pady=5)
 
-        self._tkeCamID = self._create_labeled_entry(camera_frame, "Camera ID", 0, 0, "0")
-        self._tkeCamWidth = self._create_labeled_entry(camera_frame, "Camera Width", 1, 0, "1280") # 640
-        self._tkeCamHeight = self._create_labeled_entry(camera_frame, "Camera Height", 2, 0, "720") # 480
-
-
-        # =================== Camera settings frame
-        self.camera_settings_frame = CameraSettingsFrame(self)
-        self.camera_settings_frame.set_camera_options(self._camera_factory.get_camera_types())
-        self.camera_settings_frame.grid(row=0, column=1, padx=5, pady=5, sticky="we")
-
+        self._tkeCamID = self._create_labeled_entry(tkLF_camera_frame, "Camera ID", 0, 0, "0")
+        
+        # =================== Camera type frame
+        self._tkf_camera_type = tkFrameCameraType(tkLF_camera_frame)
+        self._tkf_camera_type.set_camera_options(self._camera_factory.get_camera_types())
+        self._tkf_camera_type.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
+        
 
 
         # =================== experiment frame
@@ -53,9 +51,13 @@ class TkFrameParameters(tk.Frame):
         self.browse_button = tk.Button(experiment_frame, text='Browse', command=self.browse_directory)
         self.browse_button.grid(row=0, column=1)
 
-
         self._tkeDelay_ms = self._create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
         self._tkeNmaxImages = self._create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
+        
+        # =================== Camera settings frame
+        self.camera_settings_frame = TkFrameCameraSettings(experiment_frame)
+        self.camera_settings_frame.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="we")
+
 
         # =================== action frame
         action_frame = tk.LabelFrame(self, text="Actions and State")
