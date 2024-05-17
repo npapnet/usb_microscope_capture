@@ -4,7 +4,7 @@ import time
 
 import cv2
 
-from usb_microscope_capture import Camera, ImageCapturingExperiment
+from usb_microscope_capture import Camera_Generic, ImageCapturingExperiment
 
 #%%
 
@@ -17,7 +17,7 @@ NUM_IMAGES = 150
 IMAGE_DATA_DIR = pathlib.Path('captured_images')
 IMAGE_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-camera = Camera(id=CAMERA_ID, width=CAMERA_WIDTH, height=CAMERA_HEIGHT)
+camera = Camera_Generic(id=CAMERA_ID, width=CAMERA_WIDTH, height=CAMERA_HEIGHT)
 experiment = ImageCapturingExperiment(camera, DELAY_MS, NUM_IMAGES, image_folder=IMAGE_DATA_DIR)
 experiment.initialise()
 
