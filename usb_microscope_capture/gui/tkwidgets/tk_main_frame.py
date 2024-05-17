@@ -44,8 +44,8 @@ class TkMainFrame(tk.Frame):
         
         # =================== Camera type frame
         self._tkf_camera_type = tkFrameCameraType(tkLF_camera_frame)
-        self._tkf_camera_type.set_camera_options(self._camera_factory.get_camera_types())
         self._tkf_camera_type.set_camera_factory(self._camera_factory)
+        self._tkf_camera_type.set_camera_options(self._camera_factory.get_camera_types())
         self._tkf_camera_type.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
         
         # =================== experiment frame
