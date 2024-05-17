@@ -28,6 +28,8 @@ class AbstractCamera(ABC):
     Abstract Camera class that defines the basic interface for a camera.
     """
     model_name = ""
+    width:int = None
+    height:int = None
 
     @abstractmethod
     def initialise(self):

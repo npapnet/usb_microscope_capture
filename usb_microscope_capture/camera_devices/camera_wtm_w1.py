@@ -30,8 +30,10 @@ class Camera_WTM_W1(AbstractCamera):
     Concrete implementation of the AbstractCamera class.
     """
     model_name = "WTM W1 Camera"
+    width = 1280
+    height = 720
 
-    def __init__(self, id, width, height, init=False):
+    def __init__(self, id, width:int=1280, height:int=720, init=False):
         """
         Initializes the Camera object.
 
@@ -42,8 +44,8 @@ class Camera_WTM_W1(AbstractCamera):
             init (bool, optional): Whether to initialize the camera during object creation. Defaults to False.
         """
         self.id = id
-        self.width = width
-        self.height = height
+        self.width = 1280
+        self.height = 720
         self._camera_device = None
         if init:
             self.initialise()
