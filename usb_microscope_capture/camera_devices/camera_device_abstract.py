@@ -22,10 +22,12 @@ import logging
 import numpy as np
 import cv2
 
+
 class AbstractCamera(ABC):
     """
     Abstract Camera class that defines the basic interface for a camera.
     """
+    model_name = ""
 
     @abstractmethod
     def initialise(self):
@@ -80,3 +82,7 @@ class AbstractCamera(ABC):
         This method is intended to release the resources held by the camera.
         """
         pass
+
+
+
+

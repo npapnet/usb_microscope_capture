@@ -29,6 +29,7 @@ class Camera_WTM_W1(AbstractCamera):
     """
     Concrete implementation of the AbstractCamera class.
     """
+    model_name = "WTM W1 Camera"
 
     def __init__(self, id, width, height, init=False):
         """

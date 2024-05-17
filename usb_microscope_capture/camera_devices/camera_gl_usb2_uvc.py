@@ -24,6 +24,7 @@ class Camera_GL_USB2_UVC(AbstractCamera):
     """
     Concrete implementation of the AbstractCamera class.
     """
+    model_name = "GL USB2 UVC Camera"
 
     def __init__(self, id, width:int=640, height:int = 480, init=False):
         """

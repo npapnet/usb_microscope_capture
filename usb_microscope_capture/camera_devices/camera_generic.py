@@ -29,6 +29,7 @@ class Camera_Generic(AbstractCamera):
     """
     Concrete implementation of the AbstractCamera class.
     """
+    model_name = "Generic Camera"
 
     def __init__(self, id, width, height, init=False):
         """
