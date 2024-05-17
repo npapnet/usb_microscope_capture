@@ -21,68 +21,76 @@ logging.basicConfig(level=logging.DEBUG)
 class TkMainFrame(tk.Frame):
     _data_directory = None
     _camera_factory = CameraFactory()
-    def __init__(self, master, starting_dir,**kwargs):
+    
+    def __init__(self, master, starting_dir, **kwargs):
         super().__init__(master, **kwargs)
         self._tk_app_dir = starting_dir
         
         self.create_widgets()
+        
+        # Make the main frame expandable
+        self.grid_columnconfigure(0, weight=4)
+        self.grid_columnconfigure(1, weight=1)
 
     def create_widgets(self):
-        # =================== camera Seting Labeled Frame frame
+        # =================== camera Setting Labeled Frame frame
         tkLF_camera_frame = tk.LabelFrame(self, text="Camera Parameters")
-        tkLF_camera_frame.grid(row=0, column=0, padx=5, pady=5)
+                # Configure the camera frame to expand proportionally
+        tkLF_camera_frame.grid_columnconfigure(0, weight=4)
+        tkLF_camera_frame.grid_columnconfigure(1, weight=1)
+        tkLF_camera_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         self._tkeCamID = self._create_labeled_entry(tkLF_camera_frame, "Camera ID", 0, 0, "0")
         
         # =================== Camera type frame
         self._tkf_camera_type = tkFrameCameraType(tkLF_camera_frame)
         self._tkf_camera_type.set_camera_options(self._camera_factory.get_camera_types())
-        self._tkf_camera_type.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
+        self._tkf_camera_type.set_camera_factory(self._camera_factory)
+        self._tkf_camera_type.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
         
-
-
         # =================== experiment frame
         experiment_frame = tk.LabelFrame(self, text="Experiment Parameters")
-        experiment_frame.grid(row=1, column=0, padx=5, pady=5)
+        experiment_frame.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+
+        experiment_frame.grid_columnconfigure(0, weight=4)
+        experiment_frame.grid_columnconfigure(1, weight=1)
 
         self.folder_label = tk.Label(experiment_frame, text="Data Folder")
-        self.folder_label.grid(row=0, column=0)
+        self.folder_label.grid(row=0, column=0, sticky="w")
 
         self.browse_button = tk.Button(experiment_frame, text='Browse', command=self.browse_directory)
-        self.browse_button.grid(row=0, column=1)
+        self.browse_button.grid(row=0, column=1, sticky="e")
 
         self._tkeDelay_ms = self._create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
         self._tkeNmaxImages = self._create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
         
         # =================== Camera settings frame
         self.camera_settings_frame = TkFrameCameraSettings(experiment_frame)
-        self.camera_settings_frame.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="we")
-
+        self.camera_settings_frame.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
 
         # =================== action frame
         action_frame = tk.LabelFrame(self, text="Actions and State")
-        action_frame.grid(row=2, column=0, padx=5, pady=5)
+        action_frame.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
 
         self.start_button = tk.Button(action_frame, text='Start Experiment', font='bold')
-        self.start_button.grid(row=0, column=0)
+        self.start_button.grid(row=0, column=0, sticky="ew")
 
         self.stop_button = tk.Button(action_frame, text='Stop Experiment')
-        self.stop_button.grid(row=0, column=1)
+        self.stop_button.grid(row=0, column=1, sticky="ew")
 
         self.toggle_button = tk.Button(action_frame, text='Toggle Image Window')
-        self.toggle_button.grid(row=1, column=0, columnspan=2)
-
-
+        self.toggle_button.grid(row=1, column=0, columnspan=2, sticky="ew")
 
         self.status_indicator = tk.Canvas(action_frame, width=20, height=20)
-        self.status_indicator.grid(row=2, column=0)
+        self.status_indicator.grid(row=2, column=0, sticky="w")
         self.status_indicator.create_oval(2, 2, 18, 18, fill="red")
 
         self.status_label = tk.Label(action_frame, text="Not running")
-        self.status_label.grid(row=2, column=1)
+        self.status_label.grid(row=2, column=1, sticky="e")
 
         self.toggle_setup_capture_button = tk.Button(action_frame, text='Toggle Image Capture for Setup')
-        self.toggle_setup_capture_button.grid(row=3, column=0, columnspan=2)
+        self.toggle_setup_capture_button.grid(row=3, column=0, columnspan=2, sticky="ew")
+        
         
     def get_camera_parameters(self) -> dict:
         """Extracts the camera parameters from the Entry fields and returns them as a dictionary.
@@ -147,11 +155,11 @@ class TkMainFrame(tk.Frame):
             tk.Entry: The created object
         """        
         label = tk.Label(master, text=label_text)
-        label.grid(row=row, column=col)
+        label.grid(row=row, column=col,sticky="nsew")
 
         entry = tk.Entry(master)
         entry.insert(0, default_value)
-        entry.grid(row=row, column=col+1)
+        entry.grid(row=row, column=col+1,sticky="nsew")
         return entry
 
     def browse_directory(self):

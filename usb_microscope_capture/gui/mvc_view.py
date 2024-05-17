@@ -30,7 +30,7 @@ class View:
 
     def create_view_widgets(self):
         self.tkFrameParameters = TkMainFrame(self.master, starting_dir=self._tk_app_dir)
-        self.tkFrameParameters.pack()
+        self.tkFrameParameters.pack(fill=tk.BOTH, expand=True)
 
         self.tkTL_image_window = tk.Toplevel(self.master)
         self.tkTL_image_window.withdraw()
