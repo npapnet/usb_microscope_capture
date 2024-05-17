@@ -63,7 +63,7 @@ class tkapp_Controller:
             if time_since_last_capture_s >= self.model.experiment.delay_ms/1000:
                 # perform capture
                 self.model.experiment.last_capture_timestamp = curr_time_s
-                frame = self.model.experiment.capture_image(curr_time_s)
+                frame = self.model.experiment.capture_image(curr_time_s, record_to_disk=True)
                 self.view.update_image(frame) 
                 next_update_ms = int(self.model.experiment.delay_ms*FACTOR)
                 logging.debug(f"    - captured: {self.model.experiment.image_counter }, next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
@@ -90,7 +90,7 @@ class tkapp_Controller:
         if self.setup_state is False:
 
             cam_dict = self.view.tkf_mainFrame.get_camera_parameters()
-            exp_dict = self.view.tkf_mainFrame.get_experiment_parameters()
+            exp_dict = self.view.tkf_mainFrame.get_experiment_parameters(setup_mode=True)
             self.view.tkTL_image_window.set_size(cam_dict['cam.width'], cam_dict['cam.height'])
             logging.debug(cam_dict)
             logging.debug(exp_dict)
@@ -125,6 +125,8 @@ class tkapp_Controller:
                 # perform capture
                 self.model.experiment.last_capture_timestamp = curr_time_s
                 frame = self.model.experiment.capture_image(curr_time_s, record_to_disk=False)
+                x,y,width,height = self.view.get_roi()
+                frame = frame[ y:y+height, x:x+width]
                 self.view.update_image(frame) 
                 next_update_ms = int(self.model.experiment.delay_ms*FACTOR)
                 logging.debug(f"    - captured: {self.model.experiment.image_counter }, next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")

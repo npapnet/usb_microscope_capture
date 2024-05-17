@@ -111,7 +111,27 @@ class TkFrameCameraSettings(tk.LabelFrame):
         return self.gain_var.get()
 
     def get_roi(self):
-        return [self.x_var.get(), self.y_var.get(), self.dx_var.get(), self.dy_var.get()]
+        try:
+            x = self.x_var.get()
+        except tk.TclError:
+            x = 0
+
+        try:
+            y = self.y_var.get()
+        except tk.TclError:
+            y = 0
+        
+        try:
+            dx = self.dx_var.get()
+        except tk.TclError:
+            dx = 1
+
+        try:
+            dy = self.dy_var.get()
+        except tk.TclError:
+            dy = 1
+
+        return [x, y, dx, dy]
 
     def get_rotation(self):
         return self.rotation_var.get()

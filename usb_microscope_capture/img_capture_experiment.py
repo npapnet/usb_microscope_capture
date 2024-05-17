@@ -107,7 +107,9 @@ class ImageCapturingExperiment:
         elapsed_time = curr_time_s - self.start_timestamp
         frame = self.camera.capture_image()
 
-        if self.roi is not None:
+        if self.roi is not None and record_to_disk:
+            # apply roi only when roi is a list of 4 values and record_to_disk is True (i.e. experiment is running)
+            # assert len(self.roi) == 4, "ROI should be a list of 4 values"
             x,y,w,h = self.roi
             frame= frame[y:y+h, x:x+w]
         

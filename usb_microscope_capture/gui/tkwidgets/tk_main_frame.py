@@ -108,8 +108,8 @@ class TkMainFrame(tk.Frame):
 
         return {"cam.id": cam_id, "cam.model":cam_model, "cam.width": cam_width, "cam.height": cam_height}
     
-    def get_experiment_parameters(self):
-        if not self._data_directory:
+    def get_experiment_parameters(self, setup_mode:bool = False) -> dict:
+        if not self._data_directory and not setup_mode:
             if messagebox.askokcancel("Data Directory Not Set",
                                       "The data directory has not been initialised. "
                                       "Please select a directory to store the images."):
