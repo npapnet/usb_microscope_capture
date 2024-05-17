@@ -89,7 +89,7 @@ class Camera_GL_USB2_UVC(AbstractCamera):
     def capture_image(self, roi:list = None) -> np.ndarray:
         """
         Captures an image using the camera.
-s
+        
         Returns:
             numpy.ndarray: The captured image.
         """

@@ -94,7 +94,7 @@ class Camera_Generic(AbstractCamera):
     def capture_image(self, roi:list = None) -> np.ndarray:
         """
         Captures an image using the camera.
-s
+
         Returns:
             numpy.ndarray: The captured image.
         """
