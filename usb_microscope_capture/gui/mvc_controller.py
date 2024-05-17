@@ -32,6 +32,8 @@ class tkapp_Controller:
         # 
         cam_dict = self.view.tkf_mainFrame.get_camera_parameters()
         exp_dict = self.view.tkf_mainFrame.get_experiment_parameters()
+        # set canvas size depending on the camera resolution
+        self.view.tkTL_image_window.set_size(cam_dict['cam.width'], cam_dict['cam.height'])
         logging.debug(cam_dict)
         logging.debug(exp_dict)
         self.model.set_Experiment(camera_id=cam_dict['cam.id'], 

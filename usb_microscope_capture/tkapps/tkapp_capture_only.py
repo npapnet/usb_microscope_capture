@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 def _tk_app_capture_starter(script_dir):
     print(script_dir)
     root = tk.Tk()
-    app = tkapp_Controller(root, starting_dir=script_dir)
+    app = tkapp_Controller(master=root, starting_dir=script_dir)
     root.mainloop()
 
 def tkapp_capture_light_stack():

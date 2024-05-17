@@ -10,6 +10,7 @@ import cv2
 from PIL import Image, ImageTk
 
 from usb_microscope_capture.gui.tkwidgets.tk_main_frame import TkMainFrame
+from usb_microscope_capture.gui.tkwidgets.tktl_image_window import TKTLImageWindow
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -29,18 +30,14 @@ class View:
         self.master.after(1,self._set_image_window_init_position) # see comments
 
     def create_view_widgets(self):
+        # initialise the main frame
         self.tkf_mainFrame = TkMainFrame(self.master, starting_dir=self._tk_app_dir)
         self.tkf_mainFrame.pack(fill=tk.BOTH, expand=True)
 
-        self.tkTL_image_window = tk.Toplevel(self.master)
-        self.tkTL_image_window.withdraw()
-        self.tkTL_image_window.protocol("WM_DELETE_WINDOW", lambda : None)
-       
-        #TODO: Widht and height should be adjustable based on what the camera settings are.
-        # need to see the lifetime of the tkTL_image_window in order to access that.
-        #TODO Should apply scaling or adding scrollbars 
-        self.image_canvas = tk.Canvas(self.tkTL_image_window, width=1280, height=720)
-        self.image_canvas.pack()
+        # initialise the image window
+        self.tkTL_image_window = TKTLImageWindow(self.master)
+        # give access to the canvas of the image winodw
+        self.image_canvas = self.tkTL_image_window.get_canvas()
 
     def _set_image_window_init_position(self):
         """auxilliary function because initialisation 
