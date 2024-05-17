@@ -9,9 +9,9 @@ from tkinter import filedialog, messagebox
 import cv2
 from PIL import Image, ImageTk
 
+from usb_microscope_capture.camera_devices.camera_factory import CameraFactory 
 from .tk_frame_camera_type import tkFrameCameraType
 from .tk_camera_settings import TkFrameCameraSettings
-from usb_microscope_capture.camera_devices.camera_factory import CameraFactory 
 
 
 import logging
@@ -102,10 +102,11 @@ class TkMainFrame(tk.Frame):
             dict: A dictionary where the keys are the parameter names and the values are the parameter values.
         """
         cam_id = int(self._tkeCamID.get())
-        cam_width = int(self._tkeCamWidth.get())
-        cam_height = int(self._tkeCamHeight.get())
+        cam_width = int(self._tkf_camera_type.get_max_width())
+        cam_height = int(self._tkf_camera_type.get_max_height())
+        cam_model = self._tkf_camera_type.camera_type 
 
-        return {"cam.id": cam_id, "cam.width": cam_width, "cam.height": cam_height}
+        return {"cam.id": cam_id, "cam.model":cam_model, "cam.width": cam_width, "cam.height": cam_height}
     
     def get_experiment_parameters(self):
         if not self._data_directory:

@@ -93,3 +93,11 @@ class tkFrameCameraType(tk.LabelFrame):
 
     def get_max_height(self):
         return self.max_height_var.get()
+    
+    @property
+    def camera_type(self)->str:
+        """Returns the selected camera type	
+        Returns:	
+            str: The selected camera type (can be used with the CameraFactory to create a camera instance)
+        """
+        return self.camera_var.get()

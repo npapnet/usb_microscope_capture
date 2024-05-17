@@ -8,9 +8,10 @@ class CameraFactory:
     }
 
     @staticmethod
-    def create_camera(camera_type)->AbstractCamera:
+    def create_camera(camera_type:str)->AbstractCamera:
+        
         if camera_type in CameraFactory._cameras:
-            return CameraFactory._cameras[camera_type]()
+            return CameraFactory._cameras[camera_type]
         else:
             raise ValueError(f"Unknown camera type: {camera_type}")
 

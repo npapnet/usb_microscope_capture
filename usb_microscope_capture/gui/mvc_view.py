@@ -29,8 +29,8 @@ class View:
         self.master.after(1,self._set_image_window_init_position) # see comments
 
     def create_view_widgets(self):
-        self.tkFrameParameters = TkMainFrame(self.master, starting_dir=self._tk_app_dir)
-        self.tkFrameParameters.pack(fill=tk.BOTH, expand=True)
+        self.tkf_mainFrame = TkMainFrame(self.master, starting_dir=self._tk_app_dir)
+        self.tkf_mainFrame.pack(fill=tk.BOTH, expand=True)
 
         self.tkTL_image_window = tk.Toplevel(self.master)
         self.tkTL_image_window.withdraw()

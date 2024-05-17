@@ -23,25 +23,27 @@ class tkapp_Controller:
         self.model = Model(starting_dir = starting_dir)
         self.view = View(master, starting_dir = starting_dir)
 
-        self.view.tkFrameParameters.start_button.config(command=self.start_experiment)
-        self.view.tkFrameParameters.stop_button.config(command=self.stop_experiment)
-        self.view.tkFrameParameters.toggle_button.config(command=self.view.toggle_image_window)
-        self.view.tkFrameParameters.toggle_setup_capture_button.config(command=self.toggle_setup_capture)
+        self.view.tkf_mainFrame.start_button.config(command=self.start_experiment)
+        self.view.tkf_mainFrame.stop_button.config(command=self.stop_experiment)
+        self.view.tkf_mainFrame.toggle_button.config(command=self.view.toggle_image_window)
+        self.view.tkf_mainFrame.toggle_setup_capture_button.config(command=self.toggle_setup_capture)
 
     def start_experiment(self):
         # 
-        cam_dict = self.view.tkFrameParameters.get_camera_parameters()
-        exp_dict = self.view.tkFrameParameters.get_experiment_parameters()
+        cam_dict = self.view.tkf_mainFrame.get_camera_parameters()
+        exp_dict = self.view.tkf_mainFrame.get_experiment_parameters()
         logging.debug(cam_dict)
         logging.debug(exp_dict)
-        self.model.set_Experiment(camera_id=cam_dict['cam.id'], camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
+        self.model.set_Experiment(camera_id=cam_dict['cam.id'], 
+                                  camera_model=cam_dict['cam.model'],
+                                  camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
                                  delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
                                  image_data_dir=exp_dict['data_folder'] 
                                  #pathlib.Path("captured_images")
                                 )
         self.model.experiment.initialise(wait_for_keypress=False)
         self.experiment_state = True
-        self.view.tkFrameParameters.set_running_status(running_flag= self.experiment_state)
+        self.view.tkf_mainFrame.set_running_status(running_flag= self.experiment_state)
         self.master.after(0, self._check_experiment_state)
     
     def _check_experiment_state(self):
@@ -74,29 +76,31 @@ class tkapp_Controller:
         print ("Stopping capture experiment prematurely!")
         logging.info("Stopping capture experiment prematurely!")
         self.experiment_state = False
-        self.view.tkFrameParameters.set_running_status(running_flag=self.experiment_state)
+        self.view.tkf_mainFrame.set_running_status(running_flag=self.experiment_state)
 
     def toggle_setup_capture(self):
         """this function will toggle the setup in order to facilitate proper  configuration without saving to disk
         """
         if self.setup_state is False:
 
-            cam_dict = self.view.tkFrameParameters.get_camera_parameters()
-            exp_dict = self.view.tkFrameParameters.get_experiment_parameters()
+            cam_dict = self.view.tkf_mainFrame.get_camera_parameters()
+            exp_dict = self.view.tkf_mainFrame.get_experiment_parameters()
             logging.debug(cam_dict)
             logging.debug(exp_dict)
-            self.model.set_Experiment(camera_id=cam_dict['cam.id'], camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
+            self.model.set_Experiment(camera_id=cam_dict['cam.id'], 
+                                      camera_model=cam_dict['cam.model'],
+                                      camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
                                     delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
                                     image_data_dir=exp_dict['data_folder'] 
                                     #pathlib.Path("captured_images")
                                     )
             self.model.experiment.initialise(wait_for_keypress=False, setup_capture=True)
             self.setup_state = True
-            self.view.tkFrameParameters.set_running_status(running_flag= self.setup_state)
+            self.view.tkf_mainFrame.set_running_status(running_flag= self.setup_state)
             self.master.after(0, self._check_setup_state)
         else:
             self.setup_state = False
-            self.view.tkFrameParameters.set_running_status(running_flag=self.setup_state)
+            self.view.tkf_mainFrame.set_running_status(running_flag=self.setup_state)
 
 
     def _check_setup_state(self):
