@@ -36,8 +36,13 @@ class Model:
         logging.info("Setting height: {camera_heigjt} px")
         # self.camera.initialise()
 
-    def set_Experiment(self, camera_id:int, camera_model:str , camera_width:int=640, camera_height:int=480, delay_ms=500, num_images=150, image_data_dir='.'):
-        self.set_camera(camera_id=camera_id, camera_model= camera_model, camera_width=camera_width, camera_height=camera_height)
-        self.experiment = ImageCapturingExperiment(self.camera, delay_ms, num_images, image_folder=image_data_dir)
+    def set_Experiment(self, camera_id:int, camera_model:str , 
+                       camera_width:int=640, camera_height:int=480, 
+                       delay_ms=500, num_images=150, image_data_dir='.', 
+                       exp_params:dict=None):
+        self.set_camera(camera_id=camera_id, camera_model= camera_model, 
+                        camera_width=camera_width, camera_height=camera_height)
+        self.experiment = ImageCapturingExperiment(self.camera, delay_ms=delay_ms, num_images=num_images, 
+                                                   image_folder=image_data_dir, exp_params=exp_params)
 
 

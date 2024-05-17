@@ -10,7 +10,7 @@ from PIL import Image, ImageTk
 import logging
 logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
-from usb_microscope_capture import Camera_Generic, ImageCapturingExperiment
+
 from .mvc_model import Model
 from .mvc_view import View 
 
@@ -43,7 +43,8 @@ class tkapp_Controller:
                                   camera_model=cam_dict['cam.model'],
                                   camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
                                  delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
-                                 image_data_dir=exp_dict['data_folder'] 
+                                 image_data_dir=exp_dict['data_folder'],
+                                exp_params=exp_dict
                                  #pathlib.Path("captured_images")
                                 )
         self.model.experiment.initialise(wait_for_keypress=False)
@@ -97,7 +98,8 @@ class tkapp_Controller:
                                       camera_model=cam_dict['cam.model'],
                                       camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
                                     delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
-                                    image_data_dir=exp_dict['data_folder'] 
+                                    image_data_dir=exp_dict['data_folder'],
+                                    exp_params=exp_dict
                                     #pathlib.Path("captured_images")
                                     )
             self.model.experiment.initialise(wait_for_keypress=False, setup_capture=True)

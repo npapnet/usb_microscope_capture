@@ -122,7 +122,10 @@ class TkMainFrame(tk.Frame):
         return {
             "data_folder": self._data_directory,
             "delay_ms": int(self._tkeDelay_ms.get()),
-            "no_images": int(self._tkeNmaxImages.get())
+            "no_images": int(self._tkeNmaxImages.get()),
+            "roi": self.camera_settings_frame.get_roi(),
+            "exposure": self.camera_settings_frame.get_exposure(),
+            "gain": self.camera_settings_frame.get_gain()
         }
     
     def set_running_status(self, running_flag:bool)->None:

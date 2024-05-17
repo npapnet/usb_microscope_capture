@@ -30,19 +30,19 @@ class TkFrameCameraSettings(tk.LabelFrame):
         self.roi_frame.columnconfigure(1, weight=1)
 
         self.x_label = tk.Label(self.roi_frame, text="X:")
-        self.x_var = tk.DoubleVar()
+        self.x_var = tk.IntVar()
         self.x_entry = tk.Entry(self.roi_frame, textvariable=self.x_var)
 
         self.y_label = tk.Label(self.roi_frame, text="Y:")
-        self.y_var = tk.DoubleVar()
+        self.y_var = tk.IntVar()
         self.y_entry = tk.Entry(self.roi_frame, textvariable=self.y_var)
 
         self.dx_label = tk.Label(self.roi_frame, text="Width (dX):")
-        self.dx_var = tk.DoubleVar()
+        self.dx_var = tk.IntVar()
         self.dx_entry = tk.Entry(self.roi_frame, textvariable=self.dx_var)
 
         self.dy_label = tk.Label(self.roi_frame, text="Height (dY):")
-        self.dy_var = tk.DoubleVar()
+        self.dy_var = tk.IntVar()
         self.dy_entry = tk.Entry(self.roi_frame, textvariable=self.dy_var)
 
         self.rotation_label = tk.Label(self.roi_frame, text="Rotation:")
