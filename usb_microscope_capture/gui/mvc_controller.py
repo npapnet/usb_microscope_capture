@@ -17,12 +17,15 @@ from .mvc_view import View
 class tkapp_Controller:
     experiment_state = False
     setup_state = False
+
     def __init__(self, master, starting_dir):
         self.master = master
         
+        # create the model and view for the MVC pattern
         self.model = Model(starting_dir = starting_dir)
         self.view = View(master, starting_dir = starting_dir)
 
+        # register the callbacks
         self.view.tkf_mainFrame.start_button.config(command=self.start_experiment)
         self.view.tkf_mainFrame.stop_button.config(command=self.stop_experiment)
         self.view.tkf_mainFrame.toggle_button.config(command=self.view.toggle_image_window)
@@ -87,6 +90,7 @@ class tkapp_Controller:
 
             cam_dict = self.view.tkf_mainFrame.get_camera_parameters()
             exp_dict = self.view.tkf_mainFrame.get_experiment_parameters()
+            self.view.tkTL_image_window.set_size(cam_dict['cam.width'], cam_dict['cam.height'])
             logging.debug(cam_dict)
             logging.debug(exp_dict)
             self.model.set_Experiment(camera_id=cam_dict['cam.id'], 
