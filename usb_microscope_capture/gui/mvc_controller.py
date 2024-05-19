@@ -10,19 +10,22 @@ from PIL import Image, ImageTk
 import logging
 logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
-from usb_microscope_capture import Camera_Generic, ImageCapturingExperiment
+
 from .mvc_model import Model
 from .mvc_view import View 
 
 class tkapp_Controller:
     experiment_state = False
     setup_state = False
+
     def __init__(self, master, starting_dir):
         self.master = master
         
+        # create the model and view for the MVC pattern
         self.model = Model(starting_dir = starting_dir)
         self.view = View(master, starting_dir = starting_dir)
 
+        # register the callbacks
         self.view.tkf_mainFrame.start_button.config(command=self.start_experiment)
         self.view.tkf_mainFrame.stop_button.config(command=self.stop_experiment)
         self.view.tkf_mainFrame.toggle_button.config(command=self.view.toggle_image_window)
@@ -32,13 +35,16 @@ class tkapp_Controller:
         # 
         cam_dict = self.view.tkf_mainFrame.get_camera_parameters()
         exp_dict = self.view.tkf_mainFrame.get_experiment_parameters()
+        # set canvas size depending on the camera resolution
+        self.view.tkTL_image_window.set_size(cam_dict['cam.width'], cam_dict['cam.height'])
         logging.debug(cam_dict)
         logging.debug(exp_dict)
         self.model.set_Experiment(camera_id=cam_dict['cam.id'], 
                                   camera_model=cam_dict['cam.model'],
                                   camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
                                  delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
-                                 image_data_dir=exp_dict['data_folder'] 
+                                 image_data_dir=exp_dict['data_folder'],
+                                exp_params=exp_dict
                                  #pathlib.Path("captured_images")
                                 )
         self.model.experiment.initialise(wait_for_keypress=False)
@@ -57,7 +63,7 @@ class tkapp_Controller:
             if time_since_last_capture_s >= self.model.experiment.delay_ms/1000:
                 # perform capture
                 self.model.experiment.last_capture_timestamp = curr_time_s
-                frame = self.model.experiment.capture_image(curr_time_s)
+                frame = self.model.experiment.capture_image(curr_time_s, record_to_disk=True)
                 self.view.update_image(frame) 
                 next_update_ms = int(self.model.experiment.delay_ms*FACTOR)
                 logging.debug(f"    - captured: {self.model.experiment.image_counter }, next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
@@ -84,14 +90,16 @@ class tkapp_Controller:
         if self.setup_state is False:
 
             cam_dict = self.view.tkf_mainFrame.get_camera_parameters()
-            exp_dict = self.view.tkf_mainFrame.get_experiment_parameters()
+            exp_dict = self.view.tkf_mainFrame.get_experiment_parameters(setup_mode=True)
+            self.view.tkTL_image_window.set_size(cam_dict['cam.width'], cam_dict['cam.height'])
             logging.debug(cam_dict)
             logging.debug(exp_dict)
             self.model.set_Experiment(camera_id=cam_dict['cam.id'], 
                                       camera_model=cam_dict['cam.model'],
                                       camera_width=cam_dict['cam.width'], camera_height=cam_dict['cam.height'],
                                     delay_ms=exp_dict['delay_ms'], num_images=exp_dict['no_images'] ,
-                                    image_data_dir=exp_dict['data_folder'] 
+                                    image_data_dir=exp_dict['data_folder'],
+                                    exp_params=exp_dict
                                     #pathlib.Path("captured_images")
                                     )
             self.model.experiment.initialise(wait_for_keypress=False, setup_capture=True)
@@ -117,6 +125,8 @@ class tkapp_Controller:
                 # perform capture
                 self.model.experiment.last_capture_timestamp = curr_time_s
                 frame = self.model.experiment.capture_image(curr_time_s, record_to_disk=False)
+                x,y,width,height = self.view.get_roi()
+                frame = frame[ y:y+height, x:x+width]
                 self.view.update_image(frame) 
                 next_update_ms = int(self.model.experiment.delay_ms*FACTOR)
                 logging.debug(f"    - captured: {self.model.experiment.image_counter }, next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
