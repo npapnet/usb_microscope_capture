@@ -75,6 +75,6 @@ class View:
         self.tkTL_image_window.update_idletasks()
 
     def get_roi(self)->list:
-        return self.tkf_mainFrame.camera_settings_frame.get_roi()
+        return self.tkf_mainFrame._tkf_roi_settings.get_roi()
 
 

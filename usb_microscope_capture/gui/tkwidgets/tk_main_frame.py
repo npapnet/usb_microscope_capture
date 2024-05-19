@@ -11,7 +11,8 @@ from PIL import Image, ImageTk
 
 from usb_microscope_capture.camera_devices.camera_factory import CameraFactory 
 from .tk_frame_camera_type import tkFrameCameraType
-from .tk_camera_settings import TkFrameCameraSettings
+from .tk_camera_settings import TkFrameROISettings
+from .tk_exposure_gain_settings import TKFrameGainExposureSettings
 
 
 import logging
@@ -41,16 +42,21 @@ class TkMainFrame(tk.Frame):
         tkLF_camera_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         self._tkeCamID = self._create_labeled_entry(tkLF_camera_frame, "Camera ID", 0, 0, "0")
-        
+
+
         # =================== Camera type frame
         self._tkf_camera_type = tkFrameCameraType(tkLF_camera_frame)
         self._tkf_camera_type.set_camera_factory(self._camera_factory)
         self._tkf_camera_type.set_camera_options(self._camera_factory.get_camera_types())
         self._tkf_camera_type.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
-        
+
+        # Exposure and Gain settings   
+        self._tkf_exposure_settings = TKFrameGainExposureSettings(tkLF_camera_frame)
+        self._tkf_exposure_settings.grid(row=2, column=0, columnspan=2, pady=10, sticky='we')
+    
         # =================== experiment frame
         experiment_frame = tk.LabelFrame(self, text="Experiment Parameters")
-        experiment_frame.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+        experiment_frame.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
         experiment_frame.grid_columnconfigure(0, weight=4)
         experiment_frame.grid_columnconfigure(1, weight=1)
@@ -64,9 +70,10 @@ class TkMainFrame(tk.Frame):
         self._tkeDelay_ms = self._create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
         self._tkeNmaxImages = self._create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
         
+
         # =================== Camera settings frame
-        self.camera_settings_frame = TkFrameCameraSettings(experiment_frame)
-        self.camera_settings_frame.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self._tkf_roi_settings = TkFrameROISettings(experiment_frame)
+        self._tkf_roi_settings.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
 
         # =================== action frame
         action_frame = tk.LabelFrame(self, text="Actions and State")
@@ -92,7 +99,7 @@ class TkMainFrame(tk.Frame):
         self.toggle_setup_capture_button.grid(row=3, column=0, columnspan=2, sticky="ew")
         
         # ============== Set callbacks
-        self._tkf_camera_type.set_roi_callback(self.camera_settings_frame.update_settings_upon_device_change)
+        self._tkf_camera_type.set_roi_callback(self._tkf_roi_settings.update_settings_upon_device_change)
         self._tkf_camera_type._on_camera_selection_change()
         
     def get_camera_parameters(self) -> dict:
@@ -123,9 +130,9 @@ class TkMainFrame(tk.Frame):
             "data_folder": self._data_directory,
             "delay_ms": int(self._tkeDelay_ms.get()),
             "no_images": int(self._tkeNmaxImages.get()),
-            "roi": self.camera_settings_frame.get_roi(),
-            "exposure": self.camera_settings_frame.get_exposure(),
-            "gain": self.camera_settings_frame.get_gain()
+            "roi": self._tkf_roi_settings.get_roi(),
+            "exposure": self._tkf_exposure_settings.get_exposure(),
+            "gain": self._tkf_exposure_settings.get_gain()
         }
     
     def set_running_status(self, running_flag:bool)->None:
@@ -172,3 +179,11 @@ class TkMainFrame(tk.Frame):
     def browse_directory(self):
         self._data_directory = pathlib.Path(filedialog.askdirectory(initialdir=self._tk_app_dir))
         # self.folder_label.configure(text=self._data_directory)
+
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    frame = TkMainFrame(root, starting_dir=pathlib.cwd())
+    frame.pack(fill="both", expand=True)
+    root.mainloop()
