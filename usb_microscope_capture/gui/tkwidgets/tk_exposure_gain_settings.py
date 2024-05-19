@@ -1,8 +1,11 @@
 import tkinter as tk
 
 from usb_microscope_capture.camera_devices import AbstractCamera
+# tk_exposure_gain_settings.py
 
-class TKFrameGainExposureSettings(tk.LabelFrame):
+from usb_microscope_capture.gui.observer import Observer
+import logging
+class TKFrameGainExposureSettings(tk.LabelFrame, Observer):
     def __init__(self, master, **kwargs):
         super().__init__(master, text="Exposure & Gain Settings", **kwargs)
         
@@ -11,6 +14,7 @@ class TKFrameGainExposureSettings(tk.LabelFrame):
         
         self._create_widgets()
         self._layout_widgets()
+        # self.after(10, self._toggle_auto_settings)
         
     def _create_widgets(self):
         # Exposure time
@@ -30,7 +34,6 @@ class TKFrameGainExposureSettings(tk.LabelFrame):
     def _layout_widgets(self):
         self.auto_checkbox.grid(row=0, column=0, columnspan=2, sticky='we')
         
-
         self.gain_label.grid(row=1, column=0, sticky='e')
         self.gain_entry.grid(row=1, column=1, sticky='we')
 
@@ -74,17 +77,24 @@ class TKFrameGainExposureSettings(tk.LabelFrame):
         return self.gain_var.get()
 
     def _toggle_auto_settings(self):
+        logging.debug("Toggling auto settings")
         if self.auto_var.get():
             self.exposure_entry.config(state='disabled')
             self.gain_entry.config(state='disabled')
-            # Enable auto-exposure and auto-gain using OpenCV
             self._set_auto_exposure_gain(True)
         else:
             self.exposure_entry.config(state='normal')
             self.gain_entry.config(state='normal')
-            # Disable auto-exposure and auto-gain and set values manually using OpenCV
             self._set_auto_exposure_gain(False)
             self._set_manual_exposure_gain()
+
+    def update(self, camera):
+        if camera:
+            self._camera = camera
+            # self.set_exposure_range(camera.min_exposure, camera.max_exposure)
+            # self.set_gain_range(camera.min_gain, camera.max_gain)
+            # self.exposure_var.set(camera.default_exposure)
+            # self.gain_var.set(camera.default_gain)
 
     def _set_auto_exposure_gain(self, auto):
         # This function will use OpenCV to enable/disable auto-exposure and auto-gain
@@ -95,7 +105,7 @@ class TKFrameGainExposureSettings(tk.LabelFrame):
         # cap.release()
 
     def _set_manual_exposure_gain(self):
-        # This function will set the manual exposure and gain using OpenCV
+        # This function will set the manual exposure and gain using OpenCV  
         # cap = cv2.VideoCapture(0)
         pass
         # cap.set(cv2.CAP_PROP_EXPOSURE, self.get_exposure())
