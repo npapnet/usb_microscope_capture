@@ -119,7 +119,8 @@ class ImageCapturingExperiment:
         if record_to_disk:
             self._write_img_file(frame)
             # write metadata file
-            self.metadata_fobj.write(f"img_{self.image_counter:05d}.png\t {elapsed_time:010.3f}\t{self.image_counter}\n")
+            # self.metadata_fobj.write(f"img_{self.image_counter:05d}.png\t {elapsed_time:010.3f}\t{self.image_counter}\n")
+            self.metadata_fobj.write(f"img_{self.image_counter:05d}.png\t {elapsed_time:010.3f}\t{self.image_counter}\t{datetime.now().strftime('%H:%M:%S.%f')[:-3]}\n")
 
         self.last_capture_timestamp = curr_time_s
         self.image_counter += 1

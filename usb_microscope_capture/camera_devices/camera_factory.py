@@ -4,7 +4,7 @@ class CameraFactory:
     _cameras = {
         'Generic (640x480)': Camera_Generic,
         'GL USB2 (640x480)': Camera_GL_USB2_UVC,
-        'WTM W1 (1280x720)': Camera_WTM_W1,
+        'WTM W1 (1920x1080)': Camera_WTM_W1,
     }
 
     @staticmethod
