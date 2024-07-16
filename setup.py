@@ -8,7 +8,7 @@ requirements = [
     'scipy',
     'ipykernel',
     'numpy',
-    #'opencv-',
+    'opencv-python',
 ]
 
 test_requirements = [
