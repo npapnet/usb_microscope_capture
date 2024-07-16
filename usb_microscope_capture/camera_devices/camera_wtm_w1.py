@@ -17,6 +17,7 @@ Dependencies:
     - logging: This module is used for logging.
     - cv2: This is an OpenCV module for working with images and videos.
 """
+import os
 import time
 import logging
 import numpy as np
@@ -58,7 +59,14 @@ class Camera_WTM_W1(AbstractCamera):
             initial_delay_s (int, optional): The initial delay in seconds before capturing the first image. Defaults to 2.
         """
         logging.debug(f"initialising camera with id:{self.id}, width x height :( {self.width}x{self.height})")
-        self._camera_device = cv2.VideoCapture(self.id, cv2.CAP_DSHOW)
+        #TODO use cv2.CAP_DSHOW for windows
+        # check if system is windows or linux 
+        if os.name == 'nt':
+            logging.info("Using CAP_DSHOW for windows")
+            self._camera_device = cv2.VideoCapture(self.id, cv2.CAP_DSHOW)
+        elif os.name == 'posix':
+            logging.info("Using CAP_V4L2 for linux")
+            self._camera_device = cv2.VideoCapture(self.id)
         self._camera_device.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
         self._camera_device.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         #TODO look at https://github.com/opencv/opencv/issues/9738 and https://answers.opencv.org/question/112/autogain-how-to-disable-autogain-and-set-a-fixed-value/
