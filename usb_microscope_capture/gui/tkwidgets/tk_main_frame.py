@@ -68,7 +68,7 @@ class TkMainFrame(tk.Frame):
         self.browse_button.grid(row=0, column=1, sticky="e")
 
         self._tkeDelay_ms = self._create_labeled_entry(experiment_frame, "Delay [ms]", 1, 0, "500")
-        self._tkeNmaxImages = self._create_labeled_entry(experiment_frame, "Num of images", 2, 0, "120")
+        self._tkeNmaxImages = self._create_labeled_entry(experiment_frame, "Num of images", 2, 0, "20000")
         
 
         # =================== Camera settings frame
