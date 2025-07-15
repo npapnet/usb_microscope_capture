@@ -2,6 +2,7 @@
 import cv2
     
     
+    
 def list_ports():
     """
     Test the ports and returns a tuple with the available ports and the ones that are working.

@@ -8,7 +8,7 @@ import cv2
 from PIL import Image, ImageTk
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
 
 from .mvc_model import Model
@@ -48,6 +48,7 @@ class tkapp_Controller:
                                  #pathlib.Path("captured_images")
                                 )
         self.model.experiment.initialise(wait_for_keypress=False)
+        logging.info("Experiment initialised, starting capture loop")
         self.experiment_state = True
         self.view.tkf_mainFrame.set_running_status(running_flag= self.experiment_state)
         self.master.after(0, self._check_experiment_state)
@@ -66,11 +67,12 @@ class tkapp_Controller:
                 frame = self.model.experiment.capture_image(curr_time_s, record_to_disk=True)
                 self.view.update_image(frame) 
                 next_update_ms = int(self.model.experiment.delay_ms*FACTOR)
-                logging.debug(f"    - captured: {self.model.experiment.image_counter }, next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
+                logging.debug("    - captured: %s, next update : %d ms (%d,%.2f) ", self.model.experiment.image_counter, next_update_ms, self.model.experiment.delay_ms, time_since_last_capture_s*1000)
+                logging.info(".")
             else:
                 # not enough time passed wait a few ms
                 next_update_ms = max(1, int((self.model.experiment.delay_ms -time_since_last_capture_s*1000)*FACTOR))
-                logging.debug(f"               >    next update : {next_update_ms} ms ({self.model.experiment.delay_ms},{time_since_last_capture_s*1000:.2f}) ")
+                logging.debug("               >    next update : %d ms (%d,%.2f) ", next_update_ms, self.model.experiment.delay_ms, time_since_last_capture_s*1000)
             self.master.after(next_update_ms, self._check_experiment_state)    
         else:
             # the experiment has finished or stopped
