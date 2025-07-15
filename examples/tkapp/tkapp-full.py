@@ -13,7 +13,7 @@ from PIL import Image, ImageTk
 import logging
 logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
-from usb_microscope_capture import Camera, ImageCapturingExperiment
+from usb_microscope_capture import Camera_Generic, ImageCapturingExperiment
 #%%
 
 class Model:
@@ -34,7 +34,7 @@ class Model:
             self.camera.release()
         except:
             pass
-        self.camera = Camera(id=camera_id, width=camera_width, height=camera_height)
+        self.camera = Camera_Generic(id=camera_id, width=camera_width, height=camera_height)
         # self.camera.initialise()
 
     def set_Experiment(self, camera_id:int, camera_width:int=640, camera_height:int=480, delay_ms=500, num_images=150, image_data_dir='.'):

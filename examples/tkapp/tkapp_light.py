@@ -1,24 +1,26 @@
 #%%
 import pathlib
-import time
 import tkinter as tk
-from tkinter import filedialog, messagebox
-
-import cv2
-from PIL import Image, ImageTk
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
 from usb_microscope_capture.gui import tkapp_Controller
+from usb_microscope_capture.tkapps import tkapp_capture_light_stack
 #%%
 
 
-if __name__ == "__main__":
-    script_dir = pathlib.Path(__file__).resolve().parent
-    print(script_dir)
-    root = tk.Tk()
-    app = tkapp_Controller(root, starting_dir=script_dir)
-    root.mainloop()
+# if __name__ == "__main__": # Original way to call the app
+#     script_dir = pathlib.Path(__file__).resolve().parent
+#     print(script_dir)
+        
+#     root = tk.Tk()
+#     app = tkapp_Controller(root, starting_dir=script_dir)
+#     root.mainloop()
 
+# %%   using the  tkapps
+if __name__ == "__main__": 
+        tkapp_capture_light_stack()
+
+# FIX with the HD microscope 1280x720 the data is captured however the image is not properly displayed
 # %%
