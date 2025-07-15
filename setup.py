@@ -19,7 +19,7 @@ test_requirements = [
 
 setuptools.setup(
     name="usb_microscope_capture", 
-    version="0.0.1",
+    version="0.1.0",
     author="N. Papadakis",
     author_email="npapnet@gmail.com",
     description="A package for capturing images using a usb microscope",
