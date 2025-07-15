@@ -16,9 +16,17 @@ This is written and tested for an OEM digital Microscope with 500x zoom (probabl
 
 - clone the repository
 - navivate to the repository and to install use the following :
+
+
 ```{bash}
+## Older installation
 python setup.py install
 ```
+
+```{bash}
+pip install .
+```
+
 ### Camera drivers troubleshooting.
 
 The model I used and testd is based on Genesys Logic UVC Camera controller. This model although supported gave me trouble is some of my development machines (in others no). More Specifically what I encountered was the following:
