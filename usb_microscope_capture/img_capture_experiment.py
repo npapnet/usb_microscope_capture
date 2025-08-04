@@ -136,7 +136,7 @@ class ImageCapturingExperiment:
         frame : numpy.ndarray
             The captured image.
         """
-        filename = self.test_folder / f"img_{self.image_counter:05d}.png"
+        filename = self.test_folder /'Cam'/f"img_{self.image_counter:05d}.png"
         cv2.imwrite(str(filename.absolute()), frame)
 
 
@@ -144,10 +144,18 @@ class ImageCapturingExperiment:
         """
         Finalises the experiment by releasing the camera and closing the metadata file.
         """
+
+
         cv2.destroyAllWindows()
         self.camera.release()
         try:            
+            self.metadata_fobj.flush()
             self.metadata_fobj.close()
+            #TODO: copy metadata file to test folder/cam with another name
+
         except:
             logging.info("Could not close file")
+
+        logging.info(f"Experiment completed. Metadata saved to {self.test_metadata_fname}")
+        logging.info(f"Images saved to {self.test_folder}")
 
