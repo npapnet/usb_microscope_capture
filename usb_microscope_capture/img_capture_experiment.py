@@ -80,7 +80,7 @@ class ImageCapturingExperiment:
         """
         self.test_start_timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         self.test_folder = self.image_folder / f"test-{self.test_start_timestamp}"
-        self.test_folder.mkdir(parents=True, exist_ok=True)
+        (self.test_folder/"cam").mkdir(parents=True, exist_ok=True)
         print(self.test_folder)
         self.test_metadata_fname = self.test_folder / f"metadata_{self.test_start_timestamp}.txt"
         self.metadata_fobj = open(self.test_metadata_fname, "w", encoding="utf-8")
