@@ -34,7 +34,7 @@ class Camera_WTM_W1(AbstractCamera):
     _max_width = 1920
     _max_height = 1080
 
-    def __init__(self, id, width:int=1920, height:int=1080, init=False):
+    def __init__(self, id, width, height, init=False):
         """
         Initializes the Camera object.
 
@@ -45,8 +45,8 @@ class Camera_WTM_W1(AbstractCamera):
             init (bool, optional): Whether to initialize the camera during object creation. Defaults to False.
         """
         self.id = id
-        self.width = 1920
-        self.height = 1080
+        self.width = width if width <= self._max_width else self._max_width
+        self.height = height if height <= self._max_height else self._max_height
         self._camera_device = None
         if init:
             self.initialise()

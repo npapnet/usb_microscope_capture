@@ -1,13 +1,15 @@
 import tkinter as tk
+import logging
 from usb_microscope_capture.camera_devices import CameraFactory, AbstractCamera
 
+
 class tkFrameCameraType(tk.LabelFrame):
-    camera_factory: CameraFactory = None
-    _camera_device: AbstractCamera = None
-    _reinitialise_roi_upon_camera_change  = None
 
     def __init__(self, master, camera_factory:CameraFactory= None,**kwargs):
         super().__init__(master, text="Camera type", **kwargs)
+        
+        self._camera_device: AbstractCamera = None
+        self._reinitialise_roi_upon_camera_change  = None
         
         self.camera_factory = camera_factory
         
@@ -71,11 +73,12 @@ class tkFrameCameraType(tk.LabelFrame):
         """Callback when the camera selection changes"""
         selected_camera = self.camera_var.get()
         try:
-            if self.camera_factory:
-                self._camera_device = self.camera_factory._cameras.get(selected_camera)
-                if self._camera_device:
-                    self.update_dimensions_from_device()
-                    self._reinitialise_roi_upon_camera_change(self._camera_device)
+            self._camera_device = self.camera_factory._cameras.get(selected_camera)
+            if self._camera_device:
+                self.update_dimensions_from_device()
+                logging.debug("  ----> Breakpoint 12")
+    
+                self._reinitialise_roi_upon_camera_change(self._camera_device)
         except Exception as e:
             print(f"Error: {e}")
             pass

@@ -20,14 +20,16 @@ logging.basicConfig(level=logging.DEBUG)
 class View:
     
     def __init__(self, master, starting_dir:pathlib.Path=None):
+        logging.debug("Initializing View===>")
         self.master = master
         self._tk_app_dir = starting_dir
 
         self.master.attributes('-topmost', 1)  # keep the master window always on top
         self.create_view_widgets()
-        
+        logging.debug("  ----> View widgets created")
         # after initialisation of object set geometry of window (obsolete)
         self.master.after(1,self._set_image_window_init_position) # see comments
+        logging.debug("View initialized <===")
 
     def create_view_widgets(self):
         # initialise the main frame

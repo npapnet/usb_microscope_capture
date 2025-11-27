@@ -23,16 +23,16 @@ import numpy as np
 import cv2
 
 from .camera_device_abstract import AbstractCamera
-
+logging.basicConfig(level=logging.DEBUG)
 
 class Camera_Generic(AbstractCamera):
     """
     Concrete implementation of the AbstractCamera class.
     """
-    _max_height = 640
-    _max_width = 480
+    _max_height = 480
+    _max_width = 640
     
-    def __init__(self, id, width:int=640, height:int = 480, init=False):
+    def __init__(self, id, width:int=None, height:int=None, init=False):
         """
         Initializes the Camera object.
 

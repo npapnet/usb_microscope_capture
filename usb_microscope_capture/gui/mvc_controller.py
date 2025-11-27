@@ -8,7 +8,7 @@ import cv2
 from PIL import Image, ImageTk
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
 
 from .mvc_model import Model
@@ -18,6 +18,7 @@ class tkapp_Controller:
 
 
     def __init__(self, master, starting_dir):
+        logging.debug("Initializing tkapp_Controller===>")
         self.master = master
         # initial state variables
         self.experiment_state = False

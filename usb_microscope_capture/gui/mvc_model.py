@@ -19,6 +19,7 @@ class Model:
     """    
 
     def __init__(self, starting_dir:pathlib.Path=None ): # image_data_dir=pathlib.Path("captured_images")):
+        logging.debug("Initializing Model===>")
         self._tkapp_dir:pathlib.Path = starting_dir
         
         self.camera:AbstractCamera = None    # camera object

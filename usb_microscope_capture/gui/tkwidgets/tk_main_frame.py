@@ -43,13 +43,14 @@ class TkMainFrame(tk.Frame):
 
         self._tkeCamID = self._create_labeled_entry(tkLF_camera_frame, "Camera ID", 0, 0, "0")
 
-
         # =================== Camera type frame
         self._tkf_camera_type = tkFrameCameraType(tkLF_camera_frame)
         self._tkf_camera_type.set_camera_factory(self._camera_factory)
+        logging.debug("  ----> Breakpoint 1")
         self._tkf_camera_type.set_camera_options(self._camera_factory.get_camera_types())
         self._tkf_camera_type.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
 
+        logging.debug("  ----> Breakpoint 2")
         # Exposure and Gain settings   
         self._tkf_exposure_settings = TKFrameGainExposureSettings(tkLF_camera_frame)
         self._tkf_exposure_settings.grid(row=2, column=0, columnspan=2, pady=10, sticky='we')
