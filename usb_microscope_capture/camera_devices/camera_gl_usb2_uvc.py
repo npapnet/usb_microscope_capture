@@ -25,8 +25,8 @@ class Camera_GL_USB2_UVC(AbstractCamera):
     Concrete implementation of the AbstractCamera class.
     """
     model_name = "GL USB2 UVC Camera"
-    width = 640
-    height = 480
+    _max_width = 640
+    _max_height = 480
 
     def __init__(self, id, width:int=640, height:int = 480, init=False):
         """
@@ -39,8 +39,8 @@ class Camera_GL_USB2_UVC(AbstractCamera):
             init (bool, optional): Whether to initialize the camera during object creation. Defaults to False.
         """
         self.id = id
-        # self.width = 640
-        # self.height = 480
+        self.width = width
+        self.height = height
         self._camera_device = None
         if init:
             self.initialise()

@@ -31,8 +31,8 @@ class Camera_WTM_W1(AbstractCamera):
     Concrete implementation of the AbstractCamera class.
     """
     model_name = "WTM W1 Camera"
-    width = 1920
-    height = 1080
+    _max_width = 1920
+    _max_height = 1080
 
     def __init__(self, id, width:int=1920, height:int=1080, init=False):
         """

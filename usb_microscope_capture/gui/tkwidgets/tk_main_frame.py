@@ -113,7 +113,8 @@ class TkMainFrame(tk.Frame):
         cam_height = int(self._tkf_camera_type.get_max_height())
         cam_model = self._tkf_camera_type.camera_type 
 
-        return {"cam.id": cam_id, "cam.model":cam_model, "cam.width": cam_width, "cam.height": cam_height}
+        return {"cam.id": cam_id, "cam.model":cam_model, "cam.width": cam_width, 
+                "cam.height": cam_height}
     
     def get_experiment_parameters(self, setup_mode:bool = False) -> dict:
         if not self._data_directory and not setup_mode:

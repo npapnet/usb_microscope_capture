@@ -29,11 +29,10 @@ class Camera_Generic(AbstractCamera):
     """
     Concrete implementation of the AbstractCamera class.
     """
-    model_name = "Generic Camera"
-    width = 640
-    height = 480
+    _max_height = 640
+    _max_width = 480
     
-    def __init__(self, id, width, height, init=False):
+    def __init__(self, id, width:int=640, height:int = 480, init=False):
         """
         Initializes the Camera object.
 
@@ -43,9 +42,10 @@ class Camera_Generic(AbstractCamera):
             height (int): The height of the captured image.
             init (bool, optional): Whether to initialize the camera during object creation. Defaults to False.
         """
+        self.model_name = "Generic Camera"
         self.id = id
-        self.width = width
-        self.height = height
+        self.width = width if width <= self._max_width else self._max_width
+        self.height = height if height <= self._max_height else self._max_height
         self._camera_device = None
         if init:
             self.initialise()

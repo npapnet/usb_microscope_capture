@@ -17,13 +17,14 @@ from usb_microscope_capture.camera_devices  import CameraFactory, AbstractCamera
 class Model:
     """class to hold the MVC model
     """    
-    _tkapp_dir:pathlib.Path = None  # application dir
-    camera:AbstractCamera = None    # camera object
-    experiment:ImageCapturingExperiment = None
-    _camera_factory:CameraFactory = CameraFactory()  # TODO Make this available to view
 
-    def __init__(self, starting_dir:pathlib.Path ): # image_data_dir=pathlib.Path("captured_images")):
-        self._tkapp_dir = starting_dir
+    def __init__(self, starting_dir:pathlib.Path=None ): # image_data_dir=pathlib.Path("captured_images")):
+        self._tkapp_dir:pathlib.Path = starting_dir
+        
+        self.camera:AbstractCamera = None    # camera object
+        self.experiment:ImageCapturingExperiment = None
+        self._camera_factory:CameraFactory = CameraFactory()  # TODO Make this available to view
+
 
     def set_camera(self, camera_id:int, camera_model:str , camera_width:int=640, camera_height:int=480):
         try:

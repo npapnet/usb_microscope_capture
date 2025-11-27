@@ -18,8 +18,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class View:
-    _tk_app_dir = None
-    def __init__(self, master, starting_dir:pathlib.Path):
+    
+    def __init__(self, master, starting_dir:pathlib.Path=None):
         self.master = master
         self._tk_app_dir = starting_dir
 

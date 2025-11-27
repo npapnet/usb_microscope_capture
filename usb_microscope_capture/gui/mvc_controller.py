@@ -15,11 +15,13 @@ from .mvc_model import Model
 from .mvc_view import View 
 
 class tkapp_Controller:
-    experiment_state = False
-    setup_state = False
+
 
     def __init__(self, master, starting_dir):
         self.master = master
+        # initial state variables
+        self.experiment_state = False
+        self.setup_state = False
         
         # create the model and view for the MVC pattern
         self.model = Model(starting_dir = starting_dir)

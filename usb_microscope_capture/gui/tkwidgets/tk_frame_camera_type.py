@@ -84,9 +84,12 @@ class tkFrameCameraType(tk.LabelFrame):
         self._reinitialise_roi_upon_camera_change = callback
 
     def update_dimensions_from_device(self):
-        """Update the max width and height from the selected camera device"""
-        self.max_width_var.set(self._camera_device.width)
-        self.max_height_var.set(self._camera_device.height)
+        """Update the max width and height from the selected camera device
+        
+        TODO: should I rename this as initialize_camera_dimensions? (_max_width and _max_height are set only once)
+        """
+        self.max_width_var.set(self._camera_device._max_width)
+        self.max_height_var.set(self._camera_device._max_height)
 
     def get_max_width(self):
         return self.max_width_var.get()

@@ -27,16 +27,19 @@ class AbstractCamera(ABC):
     """
     Abstract Camera class that defines the basic interface for a camera.
     """
-    model_name = ""
-    width:int = None
-    height:int = None
+    _max_width:int = None
+    _max_height:int = None
+    model_name: str = ""
 
     @abstractmethod
     def initialise(self):
         """
         This method is intended to set up the camera for operation.
         """
-        pass
+        self.model_name = ""
+        self.width:int = None
+        self.height:int = None
+
 
     @abstractmethod
     def check_operation(self):
