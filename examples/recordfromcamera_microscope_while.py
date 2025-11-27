@@ -8,7 +8,6 @@ import pathlib
 from datetime import datetime
 import time 
 
-
 #%%
 
 IMAGE_DATA_DIR = pathlib.Path('captured_images')

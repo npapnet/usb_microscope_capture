@@ -8,7 +8,7 @@ from usb_microscope_capture import Camera_Generic, ImageCapturingExperiment
 
 #%%
 
-CAMERA_ID = 1
+CAMERA_ID = 0
 # Set the resolution of the camera
 CAMERA_WIDTH = 640
 CAMERA_HEIGHT = 480
@@ -18,9 +18,13 @@ IMAGE_DATA_DIR = pathlib.Path('captured_images')
 IMAGE_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 camera = Camera_Generic(id=CAMERA_ID, width=CAMERA_WIDTH, height=CAMERA_HEIGHT)
-experiment = ImageCapturingExperiment(camera, DELAY_MS, NUM_IMAGES, image_folder=IMAGE_DATA_DIR)
+experiment = ImageCapturingExperiment(camera, DELAY_MS, NUM_IMAGES, 
+                image_folder=IMAGE_DATA_DIR
+                ,exp_params = {
+                    'roi':None
+                })
 experiment.initialise()
-
+#%%
 while experiment.image_counter < experiment.num_images:
     
     curr_time_s = time.time()
@@ -35,3 +39,5 @@ while experiment.image_counter < experiment.num_images:
         
 
 experiment.finalise()
+
+# %%

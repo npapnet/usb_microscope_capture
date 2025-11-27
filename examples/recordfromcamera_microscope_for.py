@@ -25,7 +25,7 @@ TEST_METADATA_FNAME = TEST_FOLDER/ f"metadata_{TEST_TIMESTAMP}.txt"
 
 #%%
 # Set the camera ID (usually 0 or 1)
-CAMERA_ID = 1
+CAMERA_ID = 0
 
 # Set the resolution of the camera
 CAMERA_WIDTH = 640

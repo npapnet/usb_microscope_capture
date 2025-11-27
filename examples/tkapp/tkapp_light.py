@@ -3,7 +3,7 @@ import pathlib
 import tkinter as tk
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 # Assuming the Camera and ImageCapturingExperiment classes are defined elsewhere
 from usb_microscope_capture.gui import tkapp_Controller
 from usb_microscope_capture.tkapps import tkapp_capture_light_stack
