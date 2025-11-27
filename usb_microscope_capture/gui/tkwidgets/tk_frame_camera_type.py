@@ -75,12 +75,9 @@ class tkFrameCameraType(tk.LabelFrame):
         try:
             self._camera_device = self.camera_factory._cameras.get(selected_camera)
             if self._camera_device:
-                logging.debug("  ----> Breakpoint 12a")
                 self.update_dimensions_from_device()
                 self._reinitialise_roi_upon_camera_change(self._camera_device)
-                
-                logging.debug("  ----> Breakpoint 12b")
-    
+                    
         except Exception as e:
             print(f"Error: {e}")
             pass

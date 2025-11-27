@@ -92,8 +92,8 @@ class TkFrameROISettings(tk.LabelFrame):
         """This is a callback function that is called when the camera device is changed."""
         self.x_var.set(0)
         self.y_var.set(0)
-        self.dx_var.set(camera_device.width)
-        self.dy_var.set(camera_device.height)
+        self.dx_var.set(camera_device._max_width)
+        self.dy_var.set(camera_device._max_height)
 
 
 # Usage Example:
